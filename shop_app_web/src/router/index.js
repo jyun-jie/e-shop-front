@@ -21,7 +21,11 @@ const routes =
       {
         path: '/seller',
         name: 'seller',
-        component: ()=> import('../components/Seller.vue')
+        component: ()=> import('../components/Seller.vue'),
+        children :[
+          { path :'/seller/insert' , 
+            component : ()=>import('../views/seller/InsertPro.vue')}
+        ]
       }
       
     ]

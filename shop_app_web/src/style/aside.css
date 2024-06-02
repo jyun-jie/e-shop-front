@@ -1,0 +1,11 @@
+.el-aside{
+
+  left: 0px;
+  bottom: 0;
+  top: 60px;
+  width: 150px;
+  z-index: 200;
+  background-color: plum;
+
+  position: fixed;
+}

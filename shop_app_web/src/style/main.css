@@ -1,0 +1,10 @@
+.el-main{
+  top:55px;
+  left: 150px;
+  bottom: 60px;
+  right: 0px;
+
+  display:flex ;
+  position: fixed;
+  background-color: greenyellow;
+}

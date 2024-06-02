@@ -1,0 +1,9 @@
+.el-footer{
+  height: 60px;
+  bottom: 0px;
+  right: 0px;
+  left: 150px;
+  background-color: navy;
+  display:flex ;
+  position: fixed;
+}
