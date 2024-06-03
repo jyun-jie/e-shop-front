@@ -22,7 +22,7 @@ export async function goSeller(config){
 }
 
 export async function goInsertPro(product,config){
-  return await request.post("/insertPro",product,config.value)
+  return await request.post("/seller/Pro",product,config.value)
 }
 
 

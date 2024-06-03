@@ -9,8 +9,12 @@ const instance = axios.create({baseURL})
 //添加響應攔截器 本身就是異步處理 buyer除外
 instance.interceptors.response.use(
     result=>{
-            //200成功 直接回傳
-            return result.data;  
+        //200成功 直接回傳
+        const res = result.data;
+        console.log(res)
+        return result.data;
+
+        
     }//有錯誤訊息
     ,err =>{
         const res = err.response.status

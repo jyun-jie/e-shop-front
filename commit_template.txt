@@ -1,4 +1,4 @@
-# 提交類型 (必填): (例如: fix, feat, docs, style, refactor, test, chore)
-type: subject: 
-# 提交详细描述 (可選):body: 
-# 相關的Issue或其他参考 (可選):footer: 
+# (fix, feat, docs, style, refactor, test, chore)
+# type: subject: 
+# body: 
+# footer: 

@@ -33,10 +33,12 @@
 
 <script setup>
 import { reactive , onMounted ,ref} from 'vue'
+import { useRouter }from 'vue-router'
 import axios from 'axios'
 import { useTokenStore } from '@/store/index.js'
 import { goInsertPro } from '@/api/token.js'
 
+const router = useRouter()
 const hello = ref()
 // do not use same name with ref
 const product = reactive({
@@ -64,6 +66,8 @@ const onSubmit = async function(){
   //攜帶product物件, header
   let data = await goInsertPro(product,config)
   hello.value=data
+  alert(hello.value.data)
+  router.push("/seller")
 }
 
 </script>

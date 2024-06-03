@@ -10,7 +10,12 @@
       
     </el-aside>
         <el-container>
-          <el-main><router-view></router-view></el-main>
+          <el-main>
+             <div v-if="$route.path === '/seller'">
+              <SellerPro />
+            </div>
+              <router-view></router-view>
+          </el-main>
           <el-footer>Footer</el-footer>
         </el-container>
       </el-container>
@@ -24,6 +29,7 @@ import { onMounted ,reactive,ref } from "vue";
 import { useTokenStore } from '@/store/index.js'
 import {useRouter} from 'vue-router'
 import Header from '@/page/Header.vue'
+import SellerPro from '@/views/seller/SellerPro.vue'
 import {goSeller} from '@/api/token.js'
   const hello = ref()
   const token = useTokenStore()
