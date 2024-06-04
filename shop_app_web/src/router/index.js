@@ -24,7 +24,17 @@ const routes =
         component: ()=> import('../components/Seller.vue'),
         children :[
           { path :'/seller/insert' , 
-            component : ()=>import('../views/seller/InsertPro.vue')}
+            component : ()=>import('../views/seller/InsertPro.vue')
+          },
+          { path :'/seller/update/:id' , 
+            name : 'update',
+            component : ()=>import('../views/seller/UpdatePro.vue')
+          },
+          {
+            path :'/seller/delete/:id' , 
+            name : 'delete',
+            component : ()=>import('../views/seller/DeletePro.vue')
+          }
         ]
       }
       

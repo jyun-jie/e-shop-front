@@ -25,4 +25,11 @@ export async function goInsertPro(product,config){
   return await request.post("/seller/Pro",product,config.value)
 }
 
+export async function goSellerPro(config){
+  return await request.get("/seller/Pro",config.value)
+}
+
+export async function goDetailPro(proid,config){
+  return await request.get("/seller/Pro/"+proid,config.value)
+}
 

@@ -1,9 +1,9 @@
 .el-aside{
 
   left: 0px;
-  bottom: 0;
+  bottom: 0px;
   top: 60px;
-  width: 150px;
+  width: 25%;
   z-index: 200;
   background-color: plum;
 

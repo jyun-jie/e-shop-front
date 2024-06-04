@@ -5,7 +5,7 @@
       <el-container>
         <Aside />
         <el-container>
-          <el-main>Main</el-main>
+          <el-main class="pro">Main</el-main>
           <el-footer>Footer</el-footer>
         </el-container>
       </el-container>
@@ -43,3 +43,6 @@ import { goVisitor } from '@/api/token.js'
 
   })
 </script>
+
+<style >
+</style>

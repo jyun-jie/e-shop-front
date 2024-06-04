@@ -15,14 +15,13 @@ header {
   
 }
 .left-section{
-  margin-left: 30px;
+  margin-left: 250px;
   display:flex;
   align-items: center;
   
 }
 .middle-section{
-  margin-left: 200px;
-  margin-right: 0px;
+
   max-width: 500px;
   
   display :flex;
@@ -31,10 +30,10 @@ header {
 }
 .right-section{
   text-align: right;
-  width: 200px;
-  margin-left: 20px;
-  margin-right: 20px;
-  right: 0px;  
+  width: 0px;
+  margin-left: 0px;
+  margin-right: 300px;
+  right: 100px;  
   
   
   display: flex;
@@ -47,9 +46,9 @@ header {
   height: 55px;
 
 }
-.search-bar {
+.search-bar{
   flex:1;
-  height:34px;
+  height:40px;
   padding-left:10px;
   font-size: 16px;
   /*border-width: 1px;
