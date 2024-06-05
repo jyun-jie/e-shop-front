@@ -1,0 +1,69 @@
+header {
+  width: 100%;
+  background-color: orange;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  height: 60px;
+  z-index: 1;
+  display:flex ;
+  /*平均分配寬度，第一項和最後一項貼齊邊緣*/
+  justify-content: space-between;
+  position: fixed;
+
+  margin-bottom: 0px;
+  
+}
+.left-section{
+  margin-left: 250px;
+  display:flex;
+  align-items: center;
+  
+}
+.middle-section{
+
+  max-width: 500px;
+  
+  display :flex;
+  flex: 1 ;
+  align-items: center;
+}
+.right-section{
+  text-align: right;
+  width: 0px;
+  margin-left: 0px;
+  margin-right: 300px;
+  right: 100px;  
+  
+  
+  display: flex;
+
+  align-items: center; /* 垂直居中 */
+  justify-content: flex-end; /* 水平靠右 */
+  flex-shrink: 0;
+}
+.home-logo {
+  height: 55px;
+
+}
+.search-bar{
+  flex:1;
+  height:40px;
+  padding-left:10px;
+  font-size: 16px;
+  /*border-width: 1px;
+  border-style: solid;
+  border-color: rgb(192, 192, 192); 為以下*/
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 2px;
+  box-shadow: inset 1px 2px 5px rgba(0,0,0,0.05);
+  z-index: 99;
+}
+
+.set ,
+.short_pic {
+  margin-left: 20px;
+  height: 24px;
+  border-radius: 16px;
+  cursor: pointer;
+}

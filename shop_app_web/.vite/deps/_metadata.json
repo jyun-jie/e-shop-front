@@ -1,0 +1,49 @@
+{
+  "hash": "83588a92",
+  "configHash": "79d3913f",
+  "lockfileHash": "72ebcd77",
+  "browserHash": "b926a7a6",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "b117cd33",
+      "needsInterop": false
+    },
+    "element-plus": {
+      "src": "../../node_modules/element-plus/es/index.mjs",
+      "file": "element-plus.js",
+      "fileHash": "8d800f33",
+      "needsInterop": false
+    },
+    "pinia": {
+      "src": "../../node_modules/pinia/dist/pinia.mjs",
+      "file": "pinia.js",
+      "fileHash": "45732aae",
+      "needsInterop": false
+    },
+    "pinia-persistedstate-plugin": {
+      "src": "../../node_modules/pinia-persistedstate-plugin/dist/pinia-persistedstate-plugin.es.js",
+      "file": "pinia-persistedstate-plugin.js",
+      "fileHash": "641e3c58",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "9f42cc47",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-AYVSL3LM": {
+      "file": "chunk-AYVSL3LM.js"
+    },
+    "chunk-2BLY4MVL": {
+      "file": "chunk-2BLY4MVL.js"
+    },
+    "chunk-LQ2VYIYD": {
+      "file": "chunk-LQ2VYIYD.js"
+    }
+  }
+}

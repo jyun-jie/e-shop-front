@@ -6,6 +6,10 @@ import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-persistedstate-plugin'
+import '@/style/aside.css'
+import '@/style/header.css'
+import '@/style/main.css'
+import '@/style/footer.css'
 
 const pinia = createPinia()
 const app = createApp(App)
