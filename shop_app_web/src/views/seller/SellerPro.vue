@@ -15,7 +15,7 @@
               <div>{{pro.address}}</div>
             </div>
           </router-link>
-          <div class="del-button"><button @click="goDelete">刪除</button></div>
+          <div class="del-button"><button @click="goDelete(pro.id)">刪除</button></div>
         </li>
   </ul>
 </template>
@@ -47,9 +47,17 @@ import {goSellerPro} from '@/api/token.js'
     getGoSellerPro();
 
   })
-  const goDelete = (()=>{
-    router.push("/seller/delete")
-  })
+  const goDelete = async function(proid){
+    let result = confirm("確認是否刪除 ")
+    if(result === true ){
+      await router.push({name:'delete',params:{id:proid}})
+      alert("成功刪除")
+    }else{
+      await router.push("/seller")
+      alert("取消刪除")
+    }
+  }
+
 </script>
 
 <style>

@@ -33,3 +33,6 @@ export async function goDetailPro(proid,config){
   return await request.get("/seller/Pro/"+proid,config.value)
 }
 
+export async function goDeletePro(proid,config){
+  return await request.delete("/seller/Pro/"+proid,config.value)
+}
