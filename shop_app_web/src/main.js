@@ -11,6 +11,7 @@ import '@/style/header.css'
 import '@/style/main.css'
 import '@/style/footer.css'
 
+
 const pinia = createPinia()
 const app = createApp(App)
 const persist = createPersistedState()

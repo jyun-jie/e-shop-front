@@ -3,9 +3,9 @@
   left: 0px;
   bottom: 0px;
   top: 60px;
-  width: 25%;
+  width: 15%;
   z-index: 200;
-  background-color: plum;
+  /*background-color: plum;*/
 
   position: fixed;
 }

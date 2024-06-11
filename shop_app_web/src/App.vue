@@ -3,11 +3,10 @@
 </script>
 
 <template>
-  <div id="app">
+  <div id="app" class="all-back">
       <router-view></router-view>
     </div>
 </template>
 
-<style scoped>
-
+<style >
 </style>

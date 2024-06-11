@@ -1,5 +1,5 @@
 .el-main{
-  left: 25%;
+  left: 15%;
   top: 60px;
   right:15%;
   bottom: 60px;
@@ -7,7 +7,7 @@
 
   display:flex ;
   position: fixed;
-  width: 61%;
+  width: 71%;
   
   /*平均分配寬度，第一項和最後一項貼齊邊緣*/
   justify-content: space-between;

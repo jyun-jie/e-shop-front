@@ -26,7 +26,7 @@
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="onSubmit">Create</el-button>
-      <el-button>Cancel</el-button>
+      <el-button @click="Cancel">Cancel</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -69,5 +69,9 @@ const onSubmit = async function(){
   alert(hello.value.data)
   router.push("/seller")
 }
+
+const Cancel = (()=>{
+    router.push("/seller")
+  })
 
 </script>

@@ -25,8 +25,9 @@ export async function goInsertPro(product,config){
   return await request.post("/seller/Pro",product,config.value)
 }
 
-export async function goSellerPro(config){
-  return await request.get("/seller/Pro",config.value)
+export async function goSellerPro(params,config){
+  //需要用{params,config } 就可包含url參數與請求頭
+  return await request.get("/seller/Pro",{params:params,...config.value})
 }
 
 export async function goDetailPro(proid,config){

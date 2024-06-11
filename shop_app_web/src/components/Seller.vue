@@ -1,5 +1,5 @@
 <template>
-  <div class="common-layout">
+  <div class="common-layout all-back">
     <el-container>
       <Header />
     <el-container>
@@ -55,3 +55,17 @@ import {goSeller} from '@/api/token.js'
 
 
 </script>
+
+<style>
+.all-back{
+  margin:0px;
+  padding: 0px;
+  position: fixed;
+  left: 0%;
+  top: 0%;
+  
+  width: 100%;
+  height: 100%;
+  background-color: plum;
+}
+</style>
