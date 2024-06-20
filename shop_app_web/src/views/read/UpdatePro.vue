@@ -15,9 +15,6 @@
     <el-form-item label="產品數量">
     <el-input-number v-model="product.quantity" @change="handleChange" />
     </el-form-item>
-    <el-form-item label="(假設)產品圖片地址">
-      <el-input v-model="product.imageUrl" />
-    </el-form-item>
     <el-form-item label="發送地址">
       <el-input v-model="product.address" />
     </el-form-item>
@@ -25,7 +22,7 @@
       <el-input v-model="product.description" type="textarea" />
     </el-form-item>
     <el-form-item>
-      <!--<el-button type="primary" @click="onSubmit">Update</el-button>-->
+      <el-button type="primary" @click="onSubmit">cart</el-button>
       <el-button @click="Cancel">Cancel</el-button>
     </el-form-item>
   </el-form>
@@ -35,7 +32,7 @@
   import { useRoute , useRouter} from 'vue-router';
   import { ref , onMounted, reactive} from 'vue'
   import {useTokenStore} from '@/store/index.js'
-  import { goDetailPro } from '@/api/token.js'
+  import { goReadDetailPro } from '@/api/token.js'
   import axios from 'axios'
 
   const token = useTokenStore()
@@ -63,18 +60,29 @@
         }
       }
 
-    const getGoBuyerDetailPro = async function(){
-      let data = await goBuyerDetailPro(proid,config)
+    const getGoReadDetailPro = async function(){
+      let data = await  goReadDetailPro(proid,config)
       product.value=data.data
+      console.log(product.value)
     }
-    getGoBuyerDetailPro()
+    getGoReadDetailPro()
   })
 
   //確定更新
+  const onSubmit = (()=>{
+    axios.put("http://localhost:8080/seller/Pro/"+proid,product.value,config.value).then((response)=>{
+      product.value=response.data.data
+      console.log(product.value)
+      alert("成功更新商品")
+      router.push("/seller")
+    }).catch((error)=>{
+      console.log(error)
+    })
+  })
 
   //不要更新
   const Cancel = (()=>{
-    router.push("/seller")
+    router.push("/Read")
   })
 
 </script>

@@ -1,11 +1,16 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <Header />
+      <Header ></Header>
       <el-container>
-        <Aside />
+        <Aside ></Aside>
         <el-container>
-          <el-main class="pro">Main</el-main>
+          <el-main>
+             <div v-if="$route.path === '/Read'">
+              <ReadPro />
+            </div>
+              <router-view></router-view>
+          </el-main>
           <el-footer>Footer</el-footer>
         </el-container>
       </el-container>
@@ -20,6 +25,8 @@ import { useTokenStore } from '@/store/index.js'
 import Header from '@/page/Header.vue'
 import Aside from '@/page/Aside.vue'
 import { goVisitor } from '@/api/token.js'
+import  ReadPro  from '@/views/read/ReadPro.vue'
+
   const hello = ref([])
   const token = useTokenStore()
   const config = ref()

@@ -128,7 +128,7 @@ const submitForm = (form) => {
      
     //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     //跳轉到"/""
-    router.push("/buyer")
+    router.push("/Read")
   }).catch((err)=>{
     console.log(err);
   })

@@ -6,7 +6,7 @@ const routes =
     [ 
       {
         path: '/',
-        redirect: '/buyer'
+        redirect: '/Read'
       },
       {
         path: '/login',
@@ -14,9 +14,17 @@ const routes =
         component: () => import('../components/Login.vue')
       },
       {
-        path: '/buyer',
+        path: '/Read',
         name: 'home',
-        component: ()=> import('../components/Buyer.vue')
+        component: ()=> import('../components/Read.vue'),
+        children : [
+          { 
+
+            path : '/Read/unAuth/Pro/:id',
+            name : 'details',
+            component : ()=>import('../views/read/UpdatePro.vue')
+          },
+        ]
       },
       {
         path: '/seller',
