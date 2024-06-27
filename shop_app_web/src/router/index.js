@@ -44,7 +44,12 @@ const routes =
             component : ()=>import('../views/seller/DeletePro.vue')
           }
         ]
-      }
+      },{
+        path: '/Cart',
+        name: 'Cart',
+        component: ()=> import('../components/Cart.vue'),
+
+      },
       
     ]
 

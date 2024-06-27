@@ -24,7 +24,7 @@ export async function goReadPro(params,config){
   } catch (error) {
     console.error('Error fetching visitor data:', error);
   }*/
-  return await request.get("/Read/unAuth/Pro",{params:params,...config.value})
+  return await buyer.get("/Read/unAuth/Pro",{params:params,...config.value})
 }
 
 export async function goReadDetailPro(proid,config){
@@ -54,3 +54,10 @@ export async function goDeletePro(proid,config){
   return await request.delete("/seller/Pro/"+proid,config.value)
 }
 
+export async function goAddCart(proid,quantity,config){
+  return await request.post("/Cart/add/"+proid+"/"+quantity.value,'',config.value)
+}
+
+export async function goCart(config){
+  return await request.get("/Cart/findCartList",config.value)
+}

@@ -1,7 +1,7 @@
 <template>
   <header>
         <div class="left-section">
-          <a href="/buyer" target="_self">
+          <a href="/Read" target="_self">
             <img class="home-logo" src="@/assets/header.png" />
           </a>
         </div>
@@ -10,9 +10,9 @@
         </div>
         <div class="right-section">
           <div>
-            <a href="/set" target="_self">
-              <img class="set" src="@/assets/setting.jpg">
-            </a>
+            <router-link :to="{name:'Cart'}">
+              <img class="set" src="@/assets/cart.jpg">
+            </router-link>
           </div>
           <div>
             <a href="/my_profile" target="_self">
