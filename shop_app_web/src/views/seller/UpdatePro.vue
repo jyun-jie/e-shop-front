@@ -63,11 +63,11 @@
         }
       }
 
-    const getGoBuyerDetailPro = async function(){
-      let data = await goBuyerDetailPro(proid,config)
+    const getGoDetailPro = async function(){
+      let data = await goDetailPro(proid,config)
       product.value=data.data
     }
-    getGoBuyerDetailPro()
+    getGoDetailPro()
   })
 
   //確定更新

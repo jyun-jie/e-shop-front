@@ -14,17 +14,17 @@
       @click="doSellerAll(seller)"
       v-model="SellerChecked"
     >
-        {{key}}
        <label>賣家Id:</label>
        {{seller.sellerId}}
     </input>
-    <!-- @change.prevent="doProductAll(sellerCart.id)" -->
-    <form v-for="product in seller.sellerCart" class="Cartproduct">
+    <!-- @change.prevent="doProductAll(cartProductList.id)" -->
+    <form v-for="product in seller.cartProductList" class="Cartproduct">
       <div class="product">
         <input type="checkbox" 
-            :value="product.id" 
+            :value="product" 
             class="checkbox" 
             @click="doProduct(product,seller)"  
+            :ckeck ="isChecked(product)"
             v-model="ProductChecked"
         >
           <label>{{product.name}}</label>
@@ -38,8 +38,8 @@
         <br>
       </div>
     </form>
-      
   </form>
+  <button @click="getsubmitCart">下訂單</button>
 </template>
 
 
@@ -48,13 +48,13 @@
   import { ref , onMounted, reactive ,watch} from 'vue'
   import {useTokenStore} from '@/store/index.js'
   import { goCart } from '@/api/token.js'
+  import { submitCart } from '@/api/token.js'
   import axios from 'axios'
 
   const token = useTokenStore()
   const config = ref()
-  const Cart = ref([
-    
-  ]);
+  const Cart = ref([]);
+  const router = useRouter()
 
 
   const isAllChecked = ref(false);
@@ -73,7 +73,6 @@
     const getgoCart = async function(){
       let data = await goCart(config)
       Cart.value = data.data
-      //console.log(Cart.value)
     }
     getgoCart()
     
@@ -100,7 +99,8 @@
 
   //將該seller所有product 變 true or false
   const doSellerAll = ((seller)=>{
-    if(!SellerChecked.value.includes(seller.sellerId)){
+    const index = SellerChecked.value.findIndex(s => s===seller.sellerId);
+    if(index === -1){
         SellerChecked.value.push(seller.sellerId)
         doProductAllTrue(seller)
         doSellerAllChecked()
@@ -131,36 +131,39 @@
   //將該seller的所有product打勾
   const doProductAllTrue= ((seller)=>{
     const newProductCheck = ref([])
-    for(let i = 0 ; i<seller.sellerCart.length ; i++){
-      newProductCheck.value.push(seller.sellerCart[i].id)
+    for(let i = 0 ; i<seller.cartProductList.length ; i++){
+      newProductCheck.value.push(seller.cartProductList[i])
     }
     //兩個陣列相加
     ProductChecked.value =  [...ProductChecked.value,...newProductCheck.value]
+
   })
 
-  //將sellerCart中所有product取消打勾
+  //將cartProductList中所有product取消打勾
   const doProductAllFalse= ((seller)=>{
-    for(let i = 0 ; i<seller.sellerCart.length ; i++){
-        ProductCheckedfilter(seller.sellerCart[i])
+    for(let i = 0 ; i<seller.cartProductList.length ; i++){
+        ProductCheckedfilter(seller.cartProductList[i])
     }
   })
 
   //刪除ProductChecked中有product.id
   const ProductCheckedfilter= ((product)=>{
-    ProductChecked.value=  ProductChecked.value.filter(ProductChecked=>
-      ProductChecked !== product.id
-    )
+    const index = ProductChecked.value.findIndex(p=>p.id===product.id)
+    if(index>-1){
+      ProductChecked.value.splice(index,1);
+    }
   })
 
   //param(產品 , 購物車) 完成
   const doProduct = ((product,seller)=>{
-    if(!ProductChecked.value.includes(product.id)){
-      ProductChecked.value.push(product.id)
+    const index= ProductChecked.value.findIndex(p=>p.id===product.id)
+    if(index===-1){
+      ProductChecked.value.push(product)
       //確認購物車產品是否全勾選 放入seller
       doProductAllChecked(seller)
       doSellerAllChecked()
     }else{
-      ProductCheckedfilter(product)
+      ProductChecked.value.splice(index,1);
       //seller.sellerId 移除
       SellerChecked.value= SellerChecked.value.filter(SellerChecked=>
         SellerChecked !== seller.sellerId
@@ -173,16 +176,25 @@
   const doProductAllChecked = ((seller)=>{
     let count = 0;
       //確認購物車產品是否全在ProductChecked
-      for(let i=0 ; i<seller.sellerCart.length ; i++){
-        if(ProductChecked.value.includes(seller.sellerCart[i].id)){
+      for(let i=0 ; i<seller.cartProductList.length ; i++){
+        if(ProductChecked.value.includes(seller.cartProductList[i])){
             count++
         }
       }
       //如果 是 就seller就打勾
-      if(seller.sellerCart.length === count){
+      if(seller.cartProductList.length === count){
         SellerChecked.value.push(seller.sellerId)
       }
   })
+
+  const isChecked =((product)=>{
+    return ProductChecked.value.some(p=>p.id===product.id)
+  })
+
+  const getsubmitCart = async function(){
+    const data = await submitCart(ProductChecked,config)
+    router.push({path:'/checkOrder', query:{data: JSON.stringify(data.data)}})
+  }
 
 
 </script>

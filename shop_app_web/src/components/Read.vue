@@ -6,9 +6,12 @@
         <Aside ></Aside>
         <el-container>
           <el-main>
-             <div v-if="$route.path === '/Read'">
-              <ReadPro />
-            </div>
+              <div v-if="$route.path === '/Read'">
+                <ReadPro />
+              </div>
+              <div v-if="$route.path === '/Read/myPurchase'">
+                <PurchasePro />
+              </div>
               <router-view></router-view>
           </el-main>
           <el-footer>Footer</el-footer>
@@ -26,6 +29,7 @@ import Header from '@/page/Header.vue'
 import Aside from '@/page/Aside.vue'
 import { goVisitor } from '@/api/token.js'
 import  ReadPro  from '@/views/read/ReadPro.vue'
+import PurchasePro from "@/views/buyer/PurchasePro.vue"
 
   const hello = ref([])
   const token = useTokenStore()

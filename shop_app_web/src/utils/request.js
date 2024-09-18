@@ -21,6 +21,7 @@ instance.interceptors.response.use(
 
         //401的話 token 未登入或過期
         if (res === 401) {
+            console.log(res)
             alert("請登入使用者");
             window.location.href = "/login";
         }else{

@@ -137,6 +137,7 @@ const submitForm = (form) => {
 const register = (form) => {
   axios.post('http://localhost:8080/login/register',form).then((response)=>{
     data.value = response.data
+    console.log(data.value)
   }).catch((err)=>{
     console.log(err);
   })

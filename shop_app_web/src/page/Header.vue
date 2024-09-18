@@ -15,9 +15,14 @@
             </router-link>
           </div>
           <div>
-            <a href="/my_profile" target="_self">
+            <a href="/Read/myPurchase" target="_self">
               <img class="short_pic" src="@/assets/ghost.jpg">
             </a>
+          </div>
+          <div>
+            <router-link :to="{name:'Logout'}">
+              <img class="set" src="@/assets/cart.jpg">
+            </router-link>
           </div>
         </div>
   </header>

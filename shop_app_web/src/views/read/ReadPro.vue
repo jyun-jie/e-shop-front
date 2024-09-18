@@ -65,7 +65,7 @@ import {goReadPro } from '@/api/token.js'
     let data = await goReadPro(params,config)
     pageNum.value = data.data.pageNum
     //展開各自的object 並相加再組成陣列
-    product.value = [...product.value,...data.data.product]
+    product.value = [...product.value,...data.data.productList]
     console.log(pageNum.value)
   }
 

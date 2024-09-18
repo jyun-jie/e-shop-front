@@ -19,12 +19,17 @@ const routes =
         component: ()=> import('../components/Read.vue'),
         children : [
           { 
-
             path : '/Read/unAuth/Pro/:id',
             name : 'details',
             component : ()=>import('../views/read/UpdatePro.vue')
           },
         ]
+      },{
+        
+        path: '/Read/myPurchase',
+        name: 'purchase',
+        component: ()=> import('../components/Read.vue'),
+        
       },
       {
         path: '/seller',
@@ -48,8 +53,16 @@ const routes =
         path: '/Cart',
         name: 'Cart',
         component: ()=> import('../components/Cart.vue'),
-
-      },
+      },{
+        path :'/checkOrder' , 
+        name : 'orderCheck',
+        component : ()=>import('../views/cart/OrderCheck.vue')
+      },{
+        path :'/logout' , 
+        name : 'Logout',
+        component : ()=>import('../components/Logout.vue')
+      }
+      
       
     ]
 
