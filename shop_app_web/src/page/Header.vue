@@ -21,7 +21,7 @@
           </div>
           <div>
             <router-link :to="{name:'Logout'}">
-              <img class="set" src="@/assets/cart.jpg">
+              <img class="set" src="@/assets/header.png">
             </router-link>
           </div>
         </div>

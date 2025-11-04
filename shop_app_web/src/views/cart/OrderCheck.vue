@@ -57,8 +57,13 @@
     cartList.value = JSON.parse(data)
   })
 
-  const order = (()=>{
-    goOrder(cartList , config)
+  const order =(()=>{
+    goOrder(cartList , config).then(orderId=>{
+      if(orderId.code === 1){
+        alert(orderId.message);
+      }
+    
+    })
     router.push("/Read")
   })
 

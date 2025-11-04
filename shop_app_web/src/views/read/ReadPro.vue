@@ -8,9 +8,10 @@
             <div>
               {{pro.name}}
             </div>
-              <div>{{pro.price}}</div>
-              <div>{{pro.rate}}</div>
-              <div>{{pro.address}}</div>
+              <div>價格:{{pro.price}}</div>
+              <div>數量:{{pro.quantity}}</div>
+              <div>評分:{{pro.rate}}</div>
+              <div>位址:{{pro.address}}</div>
           </router-link>
         </li>
   </ul>
