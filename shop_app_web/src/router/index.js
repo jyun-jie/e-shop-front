@@ -47,7 +47,12 @@ const routes =
             path :'/seller/delete/:id' , 
             name : 'delete',
             component : ()=>import('../views/seller/DeletePro.vue')
-          }
+          },
+          {
+            path :'/seller/checkOrder' , 
+            name : 'checkOrder',
+            component : ()=>import('../views/seller/CheckOrder.vue')
+          },
         ]
       },{
         path: '/Cart',

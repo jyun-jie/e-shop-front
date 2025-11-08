@@ -12,7 +12,7 @@
     </div>
     <div class="split"></div>
     <div class="underline" :style="underlineStyle"></div>
-  </div>
+  
   <div v-if="isfirstEntry == true" >
     <div v-for="order in PurchaseList" class="list" >
       <el-descriptions >
@@ -26,6 +26,8 @@
         </div>
       </el-descriptions>
     </div>
+  </div>
+
   </div>
   
 
@@ -89,6 +91,7 @@
 
   const moveUnderline = (buttonId) => {
     activeButton.value = buttonId;
+    console.log(activeButton.value)
     nextTick(() => {
       const buttonElement = document.querySelector(`button.active`);
       if (buttonElement) {
@@ -102,7 +105,7 @@
   
 
 </script>
-<style scoped>
+<style>
 .all{
 }
 .list{
