@@ -73,7 +73,14 @@ export async function goOrder(cartList , config){
 export async function goPurchaseList(type ,config){
   return await request.get("/Order/purchase/",{params:{type:type},...config.value})
 }
-export async function goCheckSalesOrder(config){
-  return await request.get("/SalesOrder/check",config.value)
+export async function goCheckSalesOrder(orderState,config){
+  return await request.get("/SalesOrder/check",{params:{orderState},...config.value})
 }
+
+export async function goShipSelectedOrders(shipOrderList,config){
+  console.log(shipOrderList);
+  return await request.post("/SalesOrder/shipOrder",{shipOrderList},config.value)
+}
+
+
 

@@ -44,11 +44,12 @@
   const config = ref()
   const PurchaseList = ref([])
   const router = useRouter()
-  const oldButtonId = ref('To_Ship')
+  const oldButtonId = ref('Not_Ship')
   const buttons = ref([
-    { id: 'To_Ship', label: '送貨中' },
-    { id: 'Not_Paid', label: '未付款' },
-    { id: 'To_Receive', label: '已到貨' },
+    { id: 'Not_Ship', label: '未出貨' },
+    { id: 'Shipping', label: '運輸中' },
+    { id: 'Not_Paid', label: '未收款' },
+    { id: 'To_Receive', label: '已出貨' },
     { id: 'Complete', label: '已完成' },
   ]);
 
@@ -136,7 +137,7 @@ button {
   outline: none;
   font-size: 40px;
   position: relative;
-  width : 300px;
+  width : 150px;
   left: 30px;
 
   /*border-bottom: 10px solid gray;*/
@@ -157,7 +158,7 @@ button.active {
 
 .underline  {
   position: relative;
-  width: 300px;
+  width: 150px;
   left: 30px;
   height: 2px;
   background-color: #409eff;
