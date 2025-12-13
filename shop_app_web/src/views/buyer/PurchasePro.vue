@@ -14,7 +14,20 @@
     <div class="underline" :style="underlineStyle"></div>
   
   <div v-if="isfirstEntry == true" >
-    <div v-for="order in PurchaseList" class="list" >
+    <div v-if="PurchaseList && PurchaseList.length">
+    <div v-for="order in PurchaseList" :key="order.id" class="list" >
+      <label class="checkbox-row">
+            <input
+              type="checkbox"
+              v-model="selectedOrders"
+              :value="order.id"
+            />
+              <span v-if="oldButtonId === 'Not_Ship'">選擇訂單</span>
+              <span v-else-if="oldButtonId === 'Shipping'">選擇已送出產品</span>
+              <span v-else-if="oldButtonId === 'To_Receive'">選擇未取貨產品</span>
+      </label>
+      <label>賣家Id:</label>
+      
       <el-descriptions >
         <el-descriptions-item label="訂單編號">{{order.id}}</el-descriptions-item>
         <el-descriptions-item label="賣家名稱 :">{{order.postalName}}</el-descriptions-item>
@@ -26,7 +39,18 @@
         </div>
       </el-descriptions>
     </div>
-  </div>
+
+    <div class="ship-btn-container">
+          <el-button
+            type="primary"
+            :disabled="selectedOrders.length === 0"
+            @click="pickupOrder"
+          >
+            商品已取貨
+          </el-button>
+    </div>
+    </div>
+    </div>
 
   </div>
   
@@ -37,8 +61,11 @@
   import { useRoute , useRouter} from 'vue-router';
   import { ref , onMounted, reactive ,nextTick , watch, watchEffect} from 'vue'
   import {useTokenStore} from '@/store/index.js'
-  import { goPurchaseList } from '@/api/token.js'
+  import { goPurchaseList , goPickupOrder} from '@/api/token.js'
   import axios from 'axios'
+
+  const salesOrder = ref([])
+  const selectedOrders = ref([])
 
   const token = useTokenStore()
   const config = ref()
@@ -49,7 +76,7 @@
     { id: 'Not_Ship', label: '未出貨' },
     { id: 'Shipping', label: '運輸中' },
     { id: 'Not_Paid', label: '未收款' },
-    { id: 'To_Receive', label: '已出貨' },
+    { id: 'ReadyForPickup', label: '待收貨' },
     { id: 'Complete', label: '已完成' },
   ]);
 
@@ -103,6 +130,13 @@
       }
     });
   };
+
+  const pickupOrder = ()=>{
+    console.log(selectedOrders.value);
+    const data = goPickupOrder(selectedOrders.value,config)
+
+    selectedOrders.value = []
+  }
   
 
 </script>
@@ -170,6 +204,14 @@ button.active {
 button:hover{
   background-color: rgba(0, 0, 0, 0.055);
   border-radius: 5px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 6px;
+  font-size: 18px;
 }
 
 </style>

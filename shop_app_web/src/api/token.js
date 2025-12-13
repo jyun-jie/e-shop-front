@@ -9,8 +9,8 @@ import buyer from '@/utils/buyer.js';
 //重複的程式
 export async function goVisitor(config){
   try {
-    const data = await buyer.get('/Read');
-    console.log('Visitor Data:', data);
+    //const data = await buyer.get('/Read');
+    console.log('Visitor Data:');
   } catch (error) {
     console.error('Error fetching visitor data:', error);
   }
@@ -71,16 +71,24 @@ export async function goOrder(cartList , config){
 }
 
 export async function goPurchaseList(type ,config){
-  return await request.get("/Order/purchase/",{params:{type:type},...config.value})
+  return await request.get("/Order/State/",{params:{type:type},...config.value})
 }
+
+export async function goPickupOrder(pickupOrderList,config){
+  console.log(pickupOrderList);
+  return await request.put("/Order/received",{pickupOrderList},config.value)
+}
+
 export async function goCheckSalesOrder(orderState,config){
   return await request.get("/SalesOrder/check",{params:{orderState},...config.value})
 }
 
 export async function goShipSelectedOrders(shipOrderList,config){
-  console.log(shipOrderList);
   return await request.post("/SalesOrder/shipOrder",{shipOrderList},config.value)
 }
+
+
+
 
 
 

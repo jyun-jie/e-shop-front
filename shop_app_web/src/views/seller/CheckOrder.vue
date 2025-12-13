@@ -53,7 +53,7 @@
             出貨所選訂單
           </el-button>
         </div>
-    </div>
+      </div>
     </div>
     </div>
 </template>
@@ -76,14 +76,13 @@
     const underlineStyle = ref({});
     const isfirstEntry = ref(true)
     const selectedOrders = ref([])
-    const PurchaseList = ref([])
     
 
     const buttons = ref([
       { id: 'Not_Ship', label: '未出貨' },
       { id: 'Shipping', label: '運輸中' },
       { id: 'Not_Paid', label: '未收款' },
-      { id: 'To_Receive', label: '已出貨' },
+      { id: 'ReadyForPickup', label: '待收貨' },
       { id: 'Complete', label: '已完成' },
     ]);
 
@@ -107,7 +106,7 @@
       isfirstEntry.value = false
       moveUnderline(buttonId)
       const data = await goCheckSalesOrder(buttonId,config)
-      PurchaseList.value = data.data
+      salesOrder.value = data.data
       oldButtonId.value = buttonId
       isfirstEntry.value = true
       }
