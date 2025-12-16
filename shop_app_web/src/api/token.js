@@ -87,6 +87,17 @@ export async function goShipSelectedOrders(shipOrderList,config){
   return await request.post("/SalesOrder/shipOrder",{shipOrderList},config.value)
 }
 
+export async function goToPay(orderId,config){
+
+  return await request.post("/Api/Payment/newebpay", orderId ,
+    {
+      headers: { "Content-Type": "application/json" },
+      responseType: "text"
+    }
+  )
+}
+
+
 
 
 

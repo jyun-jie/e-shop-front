@@ -36,7 +36,7 @@
   import { useRoute , useRouter} from 'vue-router';
   import { ref , onMounted, reactive} from 'vue'
   import {useTokenStore} from '@/store/index.js'
-  import { goOrder } from '@/api/token.js'
+  import { goOrder , goToPay } from '@/api/token.js'
   import axios from 'axios'
 
   const token = useTokenStore()
@@ -57,15 +57,29 @@
     cartList.value = JSON.parse(data)
   })
 
-  const order =(()=>{
-    goOrder(cartList , config).then(orderId=>{
-      if(orderId.code === 1){
-        alert(orderId.message);
+  const order = async () => {
+    try {
+      const orderRes = await goOrder(cartList, config)
+
+      if (orderRes.code === 1) {
+        alert(orderRes.message)
+        return
       }
-    
-    })
-    router.push("/Read")
-  })
+
+      const payRes = await goToPay(orderRes.data, config)
+
+      console.log(payRes)
+
+      document.open()
+      document.write(payRes)
+      document.close()
+
+
+    } catch (err) {
+      console.error(err)
+      alert("付款發生錯誤")
+    }
+  }
 
 
 </script>

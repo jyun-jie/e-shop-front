@@ -6,28 +6,41 @@ import axios from 'axios';
 const baseURL = 'http://localhost:8080';
 const instance = axios.create({baseURL})
 
+
+const WHITE_LIST = [
+  "/Api/Payment/newebpay",
+  "/Api/Payment/notify"
+]
+
 //添加響應攔截器 本身就是異步處理 buyer除外
 instance.interceptors.response.use(
-    result=>{
-        //200成功 直接回傳
-        const res = result.data;
-        console.log(res)
-        return result.data;
-
-        
-    }//有錯誤訊息
-    ,err =>{
-        const res = err.response.status
-
-        //401的話 token 未登入或過期
-        if (res === 401) {
-            console.log(res)
-            alert("請登入使用者");
-            window.location.href = "/login";
-        }else{
-            return Promise.reject(err);
-        }
+  (response) => {
+    // 正常回傳後端 data
+    return response.data;
+  },
+  (error) => {
+    // 如果連 response 都沒有（網路錯誤）
+    if (!error.response) {
+      return Promise.reject(error);
     }
-)
 
+    const status = error.response.status;
+    const requestUrl = error.config?.url || "";
+
+    // 判斷是否在白名單
+    const isWhiteList = WHITE_LIST.some(url =>
+      requestUrl.includes(url)
+    );
+
+    // 非白名單才導去登入頁
+    if (status === 401 && !isWhiteList) {
+      alert("請登入使用者");
+      window.location.href = "/login";
+      return;
+    }
+
+    // 白名單 or 其他錯誤，原樣丟回去
+    return Promise.reject(error);
+  }
+);
 export default instance;
