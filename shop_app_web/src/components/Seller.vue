@@ -3,6 +3,8 @@
     <el-container>
       <Header />
     <el-container>
+
+    
         
     <el-aside width="200px">
       <router-link to="/seller">待出售商品</router-link>
@@ -50,6 +52,7 @@ import {goSeller} from '@/api/token.js'
     const getGoSeller =async function(){
       let data = await goSeller(config)
       hello.value=data
+      console.log(hello.value)
     }
     getGoSeller();
   

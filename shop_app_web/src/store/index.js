@@ -8,16 +8,18 @@ import { ref } from 'vue';
   3
 */ 
 export const useTokenStore = defineStore('token',()=>{
-  // 1.ref() 就是 state 屬性
+  // ref() 就是 state 屬性
   const token = ref('')
-  // 2.computed() = getters
+  //
+  const getToken = (()=>{ return token.value })
+  // computed() = getters
   const setToken = ((newToken) => token.value= newToken)
-  // 3. function = actions
+  // function = actions
   const removeToken = (()=> {
     token.value=''
   })
 
-  return { token, setToken, removeToken }
+  return { token, getToken , setToken, removeToken }
 },{
   persist:true //持久化儲存
 }

@@ -16,7 +16,7 @@ export async function goVisitor(config){
   }
 }
 
-export async function goReadPro(params){
+export async function goReadPro(params,config){
   //需要用{params,config } 就可包含url參數與請求頭
   /*try {
     const data = await buyer.get('/buyer/unAuth/Pro',{params:params,...config.value});
@@ -24,17 +24,17 @@ export async function goReadPro(params){
   } catch (error) {
     console.error('Error fetching visitor data:', error);
   }*/
-  return await buyer.get("/Read/unAuth/Pro",{params:params})
+  console.log(params)
+  return await buyer.get("/Read/unAuth/Pro",{params:params},config)
 }
 
-export async function goReadDetailPro(proid){
-  return await request.get("/Read/unAuth/Pro/"+proid)
+export async function goReadDetailPro(proid,config){
+  return await request.get("/Read/Pro/"+proid,config.value)
 }
 
 
 export async function goSeller(config){
   return await request.get("/seller",config.value)
-
 }
 
 export async function goInsertPro(product,config){
@@ -88,13 +88,12 @@ export async function goShipSelectedOrders(shipOrderList,config){
 }
 
 export async function goToPay(orderId,config){
+  return await request.post("/Api/Payment/newebpay", orderId ,config.value)
+}
 
-  return await request.post("/Api/Payment/newebpay", orderId ,
-    {
-      headers: { "Content-Type": "application/json" },
-      responseType: "text"
-    }
-  )
+export async function goQueryTradeInfo(data ,config){
+  console.log(data)
+  return await request.post('/Api/Payment/queryTrade', data , config.value)
 }
 
 

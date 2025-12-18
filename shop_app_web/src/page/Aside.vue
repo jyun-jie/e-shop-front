@@ -28,6 +28,17 @@
                   <span>優惠券</span>
                 </template>
               </el-menu-item>
+              <el-sub-menu index="3" >
+                  <template #title>
+                    <span>買家功能</span>
+                  </template>
+                  <el-menu-item-group title="買家" >
+                    
+                      <a href="/payment" class="sub-item" target="_self">
+                      <div index="1-1">交易查詢</div>
+                      </a>
+                  </el-menu-item-group>
+              </el-sub-menu>
             </el-menu>
           </el-col>
         </el-row>

@@ -6,9 +6,11 @@
         <Aside ></Aside>
         <el-container>
           <el-main>
+              <!--變ReadPro-->
               <div v-if="$route.path === '/Read'">
                 <ReadPro />
               </div>
+              <!--變myPurchase-->
               <div v-if="$route.path === '/Read/myPurchase'">
                 <PurchasePro />
               </div>

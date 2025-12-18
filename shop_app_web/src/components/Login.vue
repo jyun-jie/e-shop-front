@@ -70,6 +70,7 @@ import axios from 'axios';
 import { reactive, ref } from 'vue'
 import {useRouter} from 'vue-router'
 import { useTokenStore } from '@/store/index.js'
+import { jwtDecode } from "jwt-decode";
 
 const router = useRouter()
 const tokenStore = useTokenStore();
@@ -122,9 +123,18 @@ const isRegister= ref(false)
 const submitForm = (form) => {
   axios.post('http://localhost:8080/login/user',form).then((response)=>{
     data.data = response.data
+    
     const token = data.data.data.token
-    console.log(token)
+    
     tokenStore.setToken(token)
+    
+    const payload = jwtDecode(token);
+    
+    if (payload.role === "SELLER") {
+      router.push("/seller");
+    } else {
+      router.push("/Read");
+    }
      
     //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     //跳轉到"/""
