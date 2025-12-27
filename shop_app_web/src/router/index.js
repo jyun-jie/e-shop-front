@@ -14,7 +14,8 @@ const routes =
       {
         path: '/login',
         name: 'login',
-        component: () => import('../components/Login.vue')
+        component: () => import('../components/Login.vue'),
+        
       },
       {
         path: '/Read',
@@ -27,7 +28,7 @@ const routes =
             component : ()=>import('../views/read/UpdatePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["User"]
+              roles: ["Buyer"]
             },
           },
         ],
@@ -38,7 +39,7 @@ const routes =
         component: ()=> import('../components/Read.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["User"]
+          roles: ["Buyer"]
         },
         
       },
@@ -51,14 +52,14 @@ const routes =
             component : ()=>import('../views/seller/SellerPro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["SELLER"]
+              roles: ["Seller"]
             },
           },
           { path :'/seller/insert' , 
             component : ()=>import('../views/seller/InsertPro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["SELLER"]
+              roles: ["Seller"]
             },
           },
           { path :'/seller/update/:id' , 
@@ -66,7 +67,7 @@ const routes =
             component : ()=>import('../views/seller/UpdatePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["SELLER"]
+              roles: ["Seller"]
             },
           },
           {
@@ -75,7 +76,7 @@ const routes =
             component : ()=>import('../views/seller/DeletePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["SELLER"]
+              roles: ["Seller"]
             },
           },
           {
@@ -84,13 +85,13 @@ const routes =
             component : ()=>import('../views/seller/CheckOrder.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["SELLER"]
+              roles: ["Seller"]
             },
           },
         ],
         meta: {
           requiresAuth: true,
-          roles: ["SELLER"]
+          roles: ["Seller"]
         },
       },{
         path: '/Cart',
@@ -98,7 +99,7 @@ const routes =
         component: ()=> import('../components/Cart.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["User"]
+          roles: ["Buyer"]
         },
 
       },{
@@ -107,7 +108,7 @@ const routes =
         component : ()=>import('../views/cart/OrderCheck.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["User"]
+          roles: ["Buyer"]
         },
       },{
         path :'/logout' , 
@@ -123,14 +124,18 @@ const routes =
             component : ()=>import('../views/payment/QueryTrade.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["User"]
+              roles: ["Buyer"]
             },
           },
         ],
         meta: {
           requiresAuth: true,
-          roles: ["User"]
+          roles: ["Buyer"]
         },
+      },{
+        path: '/login/sellerApply',
+        name: 'sellerApply',
+        component: () => import('../views/buyer/ApplySeller.vue'),
       }
       
       
@@ -159,9 +164,9 @@ router.beforeEach((to, from, next) => {
     const payload = jwtDecode(token);
     console.log(payload.role)
     if (!to.meta.roles.includes(payload.role) ) {
-      if(payload.role === 'SELLER'){
+      if(payload.role === 'Seller'){
         return next("/seller");
-      }else if (payload.role === 'User'){
+      }else if (payload.role === 'Buyer'){
         return next("/Read")
       }
       

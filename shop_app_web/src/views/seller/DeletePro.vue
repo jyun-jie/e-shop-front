@@ -25,8 +25,17 @@
     }
 
     const getDeletePro = async function(){
-      let data = await goDeletePro(proid,config)
-      result.value = data.data
+      await goDeletePro(proid,config).then(res => {
+        console.log(res)
+// res.data 才是你 Postman 看到的那個物件
+        if (res.code === 0) {
+          alert("成功！");
+        } else {
+          // 🚨 這裡！你要抓的是 res.data.message
+          alert("失敗原因：" + res.message); 
+        }
+      })
+      
       router.push("/seller")
       console.log("到seller")
     }

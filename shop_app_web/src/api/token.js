@@ -96,6 +96,9 @@ export async function goQueryTradeInfo(data ,config){
   return await request.post('/Api/Payment/queryTrade', data , config.value)
 }
 
+export async function goApplySeller(data ,config){
+  return await request.post('/login/sellerApplication', data , config.value)
+}
 
 
 

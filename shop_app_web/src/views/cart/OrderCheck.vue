@@ -60,6 +60,7 @@
   const order = async () => {
     try {
       const orderRes = await goOrder(cartList, config)
+      console.log(orderRes.data)
 
       if (orderRes.code === 1) {
         alert(orderRes.message)

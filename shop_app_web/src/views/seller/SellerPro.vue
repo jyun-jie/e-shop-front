@@ -85,10 +85,10 @@ import { Loading } from 'element-plus/es/components/loading/src/service'
     )
 
   const goDelete = async function(proid){
-    let result = confirm("確認是否刪除 ")
+    let result = confirm("確認是否刪除 ") // 給出是否確認刪除窗口 是/否
     if(result === true ){
       await router.push({name:'delete',params:{id:proid}})
-      alert("成功刪除")
+      
     }else{
       await router.push("/seller")
       alert("取消刪除")
