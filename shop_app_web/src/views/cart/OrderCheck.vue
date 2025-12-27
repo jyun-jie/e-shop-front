@@ -18,14 +18,16 @@
       </div>
       <div class="orderButton" >
         <label>{{cart.sellerId}}</label>
-          <p class="size">住址<input v-model="cart.receiverAddress" class="address" placeholder="address" type="text"></input></p>
-          <select v-model="cart.payment_method" class="option">
-            <option value="0">貨到付款</option>
-            <option value="1">信用卡</option>
-          </select>
-          <label class="total">此賣家購物車商品總計:{{cart.total}}</label>
+        <label class="total">此賣家購物車商品總計:{{cart.total}}</label>
       </div>
     </form>
+    <p class="size">住址<input v-model="receiverAddress" class="address" placeholder="address" type="text"></input></p>
+    <select v-model="payment_method" class="option">
+      <option value="COD">貨到付款</option>
+      <option value="CREDIT_CARD">信用卡</option>
+    </select>
+    
+
   </div>
   <div class="orderButton ">
     <button  class="size" @click="order()">下單去</button>
@@ -45,6 +47,9 @@
   const data = route.query.data;
   const config = ref()
   const cartList = ref([])
+  const payment_method = ref('');
+  const receiverAddress = ref('');
+
 
   onMounted(()=>{
     config.value={
@@ -55,11 +60,19 @@
       }
 
     cartList.value = JSON.parse(data)
+    console.log(cartList.value);
   })
 
   const order = async () => {
     try {
-      const orderRes = await goOrder(cartList, config)
+      console.log(payment_method.value);
+      console.log(receiverAddress.value)
+      const dataToSend = {
+        cartList: cartList.value,
+        payment_method: payment_method.value,
+        receiverAddress: receiverAddress.value,
+      };
+      const orderRes = await goOrder(dataToSend, config)
       console.log(orderRes.data)
 
       if (orderRes.code === 1) {
@@ -68,8 +81,6 @@
       }
 
       const payRes = await goToPay(orderRes.data, config)
-
-      console.log(payRes)
 
       document.open()
       document.write(payRes)

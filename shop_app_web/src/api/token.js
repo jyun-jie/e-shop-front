@@ -66,8 +66,9 @@ export async function submitCart(productChecked , config){
   return await request.post("/Order/check",productChecked.value,config.value)
 }
 
-export async function goOrder(cartList , config){
-  return await request.post("/Order/order",cartList.value,config.value)
+export async function goOrder(data , config){
+  console.log(data)
+  return await request.post("/Order/order",data,config.value)
 }
 
 export async function goPurchaseList(type ,config){
@@ -100,6 +101,11 @@ export async function goApplySeller(data ,config){
   return await request.post('/login/sellerApplication', data , config.value)
 }
 
+export async function goPaid(data ,config){
+  console.log(data.value)
+  console.log(config.value)
+  return await request.post('/Api/Payment/changePaid?data='+ data.value, null , config.value)
+}
 
 
 

@@ -119,7 +119,8 @@ const routes =
         name :'Payment' ,
         component : ()=>import('../components/Payment.vue'),
         children :[
-          { path :'/queryTrade' , 
+          { 
+            path :'/queryTrade' , 
             name : 'queryTrade',
             component : ()=>import('../views/payment/QueryTrade.vue'),
             meta: {
@@ -127,6 +128,15 @@ const routes =
               roles: ["Buyer"]
             },
           },
+          {
+            path :'/CodPay' , 
+            name : 'CodPay',
+            component : ()=>import('../views/payment/CodPaid.vue'),
+            meta: {
+              requiresAuth: true,
+              roles: ["Buyer"]
+            },
+          }
         ],
         meta: {
           requiresAuth: true,

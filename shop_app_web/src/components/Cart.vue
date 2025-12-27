@@ -73,8 +73,10 @@
     const getgoCart = async function(){
       let data = await goCart(config)
       Cart.value = data.data
+      console.log(data.data)
     }
     getgoCart()
+    
     
   })
 
