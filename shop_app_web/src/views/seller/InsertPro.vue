@@ -16,7 +16,7 @@
     <el-input-number v-model="product.quantity" @change="handleChange" />
     </el-form-item>
     <el-form-item label="(假設)產品圖片地址">
-      <el-input v-model="product.imageUrl" />
+      <input type="file" @change="onFileChange" />
     </el-form-item>
     <el-form-item label="發送地址">
       <el-input v-model="product.address" />
@@ -34,6 +34,7 @@
 <script setup>
 import { reactive , onMounted ,ref} from 'vue'
 import { useRouter }from 'vue-router'
+
 import axios from 'axios'
 import { useTokenStore } from '@/store/index.js'
 import { goInsertPro } from '@/api/token.js'
@@ -46,28 +47,52 @@ const product = reactive({
   type: '',
   price: 0,
   quantity: 1,
-  imageUrl: '',
   address: '',
   description: '',
 })
+const imageFile = ref(null)
+
 const config = ref()
 const token = useTokenStore()
 onMounted(()=>{
   config.value={
         headers: {
-        'Content-Type': 'application/json',
+        
         'Authorization': `Bearer `+token.token
         }
       }
 })
 
+//"Content-Type": "multipart/form-data",
 const onSubmit = async function(){
   //要進到攔截器 查看是否登入token
   //攜帶product物件, header
-  let data = await goInsertPro(product,config)
+  const dto = {
+    name: product.name,
+    type: product.type,
+    price: product.price,
+    quantity: product.quantity,
+    address: product.address,
+    description: product.description
+  }
+
+  const formData = new FormData();
+  const jsonBlob = new Blob([JSON.stringify(dto)], { type: "application/json" });
+  formData.append("data", jsonBlob);
+  formData.append("image", imageFile.value);
+
+
+
+  let data = await goInsertPro(formData,config)
+
+
   hello.value=data
   alert(hello.value.data)
   router.push("/seller")
+}
+
+const onFileChange = (event) => {
+  imageFile.value = event.target.files[0]
 }
 
 const Cancel = (()=>{
