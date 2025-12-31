@@ -4,7 +4,10 @@
         <li v-for="pro in product" class="li-container" >
           <!--:to="name=網址 param = post傳值"-->
           <router-link :to="{name:'update',params:{id:pro.id}}" class="update-container">
-            <div><img id="img" src="@/image/loading.svg" class="loading-container" alt="產品圖片" ></div>
+            <div>
+              <img id="img" v-if="pro.imageUrl === null || pro.imageUrl==='' " src="@/image/loading.svg" class="loading-container" alt="產品圖片" >
+              <img id="img" v-else :src="pro.imageUrl" class="product-container" >
+            </div>
             <div>
               {{pro.name}}
             </div>
@@ -61,14 +64,15 @@ import { Loading } from 'element-plus/es/components/loading/src/service'
     
   const getGoSellerPro =async function(){
     let params ={
-    pageNum:pageNum.value,
-    pageSize:pageSize.value
-  }
+      pageNum:pageNum.value,
+      pageSize:pageSize.value
+    }
     let data = await goSellerPro(params,config)
     pageNum.value = data.data.pageNum
     //展開各自的object 並相加再組成陣列
     product.value = [...product.value,...data.data.productList]
     console.log(pageNum.value)
+    console.log(product.value)
   }
 
   const observer = new IntersectionObserver(
@@ -197,6 +201,14 @@ import { Loading } from 'element-plus/es/components/loading/src/service'
   animation: rotate 3s linear infinite;
   
 }
+
+
+.product-container{
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+}
+
 /* 創建動畫效果 rotate 
     rotate(*deg)表示旋轉度數 還有其他
 */

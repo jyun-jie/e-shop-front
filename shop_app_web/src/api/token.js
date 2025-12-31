@@ -10,7 +10,7 @@ import buyer from '@/utils/buyer.js';
 export async function goVisitor(config){
   try {
     //const data = await buyer.get('/Read');
-    console.log('Visitor Data:');
+    return await request.get("/Read/unAuth/Pro/xxx",config)
   } catch (error) {
     console.error('Error fetching visitor data:', error);
   }
@@ -27,6 +27,7 @@ export async function goReadPro(params,config){
   console.log(params)
   return await buyer.get("/Read/unAuth/Pro",{params:params},config)
 }
+
 
 export async function goReadDetailPro(proid,config){
   return await request.get("/Read/Pro/"+proid,config.value)

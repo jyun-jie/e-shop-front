@@ -16,7 +16,7 @@
     <el-input-number v-model="product.quantity" @change="handleChange" />
     </el-form-item>
     <el-form-item label="(假設)產品圖片地址">
-      <input type="file" @change="onFileChange" />
+      <input type="file" multiple @change="onFileChange" />
     </el-form-item>
     <el-form-item label="發送地址">
       <el-input v-model="product.address" />
@@ -50,21 +50,21 @@ const product = reactive({
   address: '',
   description: '',
 })
-const imageFile = ref(null)
+const imageFiles = ref([])
 
 const config = ref()
 const token = useTokenStore()
 onMounted(()=>{
   config.value={
         headers: {
-        
+         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer `+token.token
         }
       }
 })
 
 //"Content-Type": "multipart/form-data",
-const onSubmit = async function(){
+const onSubmit = async function(event){
   //要進到攔截器 查看是否登入token
   //攜帶product物件, header
   const dto = {
@@ -76,10 +76,20 @@ const onSubmit = async function(){
     description: product.description
   }
 
+  
+
+
   const formData = new FormData();
   const jsonBlob = new Blob([JSON.stringify(dto)], { type: "application/json" });
   formData.append("data", jsonBlob);
-  formData.append("image", imageFile.value);
+
+  imageFiles.value.forEach(file => {
+    formData.append("images", file);
+  });
+  formData.append("images", imageFiles.value);
+
+  console.log(formData.get("data"));
+  console.log(formData.getAll("images"));
 
 
 
@@ -92,7 +102,9 @@ const onSubmit = async function(){
 }
 
 const onFileChange = (event) => {
-  imageFile.value = event.target.files[0]
+  const files = event.target.files
+  imageFiles.value = Array.from(files)
+  console.log("上傳圖片 : " + imageFiles)
 }
 
 const Cancel = (()=>{
