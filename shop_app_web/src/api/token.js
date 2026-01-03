@@ -54,8 +54,21 @@ export async function goDetailPro(proid,config){
   return await request.get("/seller/Pro/"+proid,config.value)
 }
 
+export async function goTakeDownPro(proid,config){
+  return await request.put("/seller/Pro/takenDown/"+proid,null,config.value)
+}
+
 export async function goDeletePro(proid,config){
-  return await request.delete("/seller/Pro/"+proid,config.value)
+  return await request.put("/seller/Pro/delete/"+proid,null,config.value)
+}
+
+
+export async function goUpdateProduct(formData,config){
+  return await request.put("/seller/Pro",formData,config.value)
+}
+
+export async function goDeleteImage(imageUrl,config){
+  return await request.delete("/seller/Image/"+imageUrl,config.value)
 }
 
 export async function goAddCart(proid,quantity,config){

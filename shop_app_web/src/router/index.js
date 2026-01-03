@@ -28,7 +28,7 @@ const routes =
             component : ()=>import('../views/read/UpdatePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Buyer"]
+              roles: ["User"]
             },
           },
         ],
@@ -39,7 +39,7 @@ const routes =
         component: ()=> import('../components/Read.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["Buyer"]
+          roles: ["User"]
         },
         
       },
@@ -48,18 +48,27 @@ const routes =
         name: 'seller',
         component: ()=> import('../components/Seller.vue'),
         children :[
-          { path :'/sellerPro' , 
+          { 
+            path :'/sellerPro' , 
             component : ()=>import('../views/seller/SellerPro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Seller"]
+              roles: ["User"]
+            },
+          },
+          {
+            path :'/seller/takenDown' , 
+            component : ()=>import('../views/seller/takenDownPro.vue'),
+            meta: {
+              requiresAuth: true,
+              roles: ["User"]
             },
           },
           { path :'/seller/insert' , 
             component : ()=>import('../views/seller/InsertPro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Seller"]
+              roles: ["User"]
             },
           },
           { path :'/seller/update/:id' , 
@@ -67,7 +76,7 @@ const routes =
             component : ()=>import('../views/seller/UpdatePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Seller"]
+              roles: ["User"]
             },
           },
           {
@@ -76,7 +85,16 @@ const routes =
             component : ()=>import('../views/seller/DeletePro.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Seller"]
+              roles: ["User"]
+            },
+          },
+          {
+            path :'/seller/takeDown/:id' , 
+            name : 'takeDown',
+            component : ()=>import('../views/seller/TakeDownPro.vue'),
+            meta: {
+              requiresAuth: true,
+              roles: ["User"]
             },
           },
           {
@@ -85,13 +103,13 @@ const routes =
             component : ()=>import('../views/seller/CheckOrder.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Seller"]
+              roles: ["User"]
             },
           },
         ],
         meta: {
           requiresAuth: true,
-          roles: ["Seller"]
+          roles: ["User"]
         },
       },{
         path: '/Cart',
@@ -99,7 +117,7 @@ const routes =
         component: ()=> import('../components/Cart.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["Buyer"]
+          roles: ["User"]
         },
 
       },{
@@ -108,7 +126,7 @@ const routes =
         component : ()=>import('../views/cart/OrderCheck.vue'),
         meta: {
           requiresAuth: true,
-          roles: ["Buyer"]
+          roles: ["User"]
         },
       },{
         path :'/logout' , 
@@ -125,7 +143,7 @@ const routes =
             component : ()=>import('../views/payment/QueryTrade.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Buyer"]
+              roles: ["User"]
             },
           },
           {
@@ -134,13 +152,13 @@ const routes =
             component : ()=>import('../views/payment/CodPaid.vue'),
             meta: {
               requiresAuth: true,
-              roles: ["Buyer"]
+              roles: ["User"]
             },
           }
         ],
         meta: {
           requiresAuth: true,
-          roles: ["Buyer"]
+          roles: ["User"]
         },
       },{
         path: '/login/sellerApply',

@@ -9,9 +9,13 @@
     <el-aside width="200px">
       <router-link to="/seller">待出售商品</router-link>
       <br>
+      <router-link to="/seller/takenDown">下架的商品</router-link>
+      <br>
       <router-link to="/seller/insert">我要賣商品</router-link>
       <br>
       <router-link to="/seller/checkOrder">我的銷售訂單</router-link>
+      <br>
+      
       
     </el-aside>
         <el-container>

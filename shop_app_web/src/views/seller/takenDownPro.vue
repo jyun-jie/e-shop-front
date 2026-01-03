@@ -15,7 +15,7 @@
               <div>{{pro.rate}}</div>
               <div>{{pro.address}}</div>
           </router-link>
-            <div class="del-button"><button @click="goTakeDown(pro.id)">下架</button></div>
+            <div class="del-button"><button @click="goDelete(pro.id)">刪除</button></div>
         </li>
   </ul>
   <div ref="loadMoreTrigger" class="load-more-trigger" >Loading more...</div>
@@ -66,18 +66,14 @@ import { Loading } from 'element-plus/es/components/loading/src/service'
     let params ={
       pageNum:pageNum.value,
       pageSize:pageSize.value,
-      status:"in_stock",
+      status:"taken_down",
     }
     let data = await goSellerPro(params,config)
-    console.log(data)
-    if(data.data !== null){
-      pageNum.value = data.data.pageNum
-      //展開各自的object 並相加再組成陣列
-      product.value = [...product.value,...data.data.productList]
-      console.log(pageNum.value)
-      console.log(product.value)
-    }
-    
+    pageNum.value = data.data.pageNum
+    //展開各自的object 並相加再組成陣列
+    product.value = [...product.value,...data.data.productList]
+    console.log(pageNum.value)
+    console.log(product.value)
   }
 
   const observer = new IntersectionObserver(
@@ -93,10 +89,10 @@ import { Loading } from 'element-plus/es/components/loading/src/service'
       }
     )
 
-  const goTakeDown = async function(proid){
-    let result = confirm("確認是否下架 ") // 給出是否確認刪除窗口 是/否
+  const goDelete = async function(proid){
+    let result = confirm("確認是否刪除 ") // 給出是否確認刪除窗口 是/否
     if(result === true ){
-      await router.push({name:'takeDown',params:{id:proid}})
+      await router.push({name:'delete',params:{id:proid}})
       
     }else{
       await router.push("/seller")

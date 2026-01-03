@@ -3,6 +3,9 @@
     <el-form-item label="產品名稱">
       <el-input v-model="product.name" />
     </el-form-item>
+    <el-form-item label="產品封面圖片">
+      <input type="file" @change="onCoverPhotoChange" />
+    </el-form-item>
     <el-form-item label="產品類型">
       <el-select v-model="product.type" placeholder="請選擇類型">
         <el-option label="電子" value="electronic" />
@@ -15,7 +18,7 @@
     <el-form-item label="產品數量">
     <el-input-number v-model="product.quantity" @change="handleChange" />
     </el-form-item>
-    <el-form-item label="(假設)產品圖片地址">
+    <el-form-item label="(假設)產品內容圖片">
       <input type="file" multiple @change="onFileChange" />
     </el-form-item>
     <el-form-item label="發送地址">
@@ -51,6 +54,7 @@ const product = reactive({
   description: '',
 })
 const imageFiles = ref([])
+const coverImage = ref()
 
 const config = ref()
 const token = useTokenStore()
@@ -86,18 +90,25 @@ const onSubmit = async function(event){
   imageFiles.value.forEach(file => {
     formData.append("images", file);
   });
-  formData.append("images", imageFiles.value);
+   formData.append("cover", coverImage.value)
+
+  //formData.append("images", imageFiles.value);
 
   console.log(formData.get("data"));
   console.log(formData.getAll("images"));
+  console.log(formData.getAll("cover"))
 
 
 
   let data = await goInsertPro(formData,config)
-
+  if(data.code === 1 ){
+    alert(data.message)
+  }else{
+    alert(data.data)
+  }
+  console.log(data)
 
   hello.value=data
-  alert(hello.value.data)
   router.push("/seller")
 }
 
@@ -105,6 +116,12 @@ const onFileChange = (event) => {
   const files = event.target.files
   imageFiles.value = Array.from(files)
   console.log("上傳圖片 : " + imageFiles)
+}
+
+const onCoverPhotoChange = (event) =>{
+  const files = event.target.files[0]
+  coverImage.value = files
+  console.log("上傳封面圖片 : " + coverImage.value)
 }
 
 const Cancel = (()=>{

@@ -35,7 +35,7 @@ instance.interceptors.response.use(
     // 非白名單才導去登入頁
     if (status === 401 && !isWhiteList) {
       alert("你沒有權限執行此操作 請登入有該權限使用者");
-      window.location.href = "/login";
+      //window.location.href = "/login";
       return;
     }
 

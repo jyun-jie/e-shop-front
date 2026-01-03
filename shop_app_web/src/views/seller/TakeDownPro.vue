@@ -7,7 +7,7 @@
   import axios from 'axios'
   import { useRoute , useRouter} from 'vue-router'
   import { useTokenStore} from '@/store/index.js'
-  import { goDeletePro } from '@/api/token.js'
+  import { goTakeDownPro } from '@/api/token.js'
   const route = useRoute()
   const router = useRouter()
   const proid = route.params.id;
@@ -24,11 +24,11 @@
         }
     }
 
-    const getDeletePro = async function(){
+    const getgoTakeDownPro = async function(){
 
       console.log(proid)
     
-      await goDeletePro(proid,config).then(res => {
+      await goTakeDownPro(proid,config).then(res => {
         console.log(res)
 // res.data 才是你 Postman 看到的那個物件
         if (res.code === 0) {
@@ -43,7 +43,7 @@
       console.log("到seller")
     }
 
-    getDeletePro()
+    getgoTakeDownPro()
   })
   
   
