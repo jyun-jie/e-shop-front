@@ -1,22 +1,26 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <Header ></Header>
+      <Header />
       <el-container>
-        <Aside ></Aside>
+        <Aside />
         <el-container>
           <el-main>
-              <!--變ReadPro-->
-              <div v-if="$route.path === '/Read'">
-                <ReadPro />
-              </div>
-              <!--變myPurchase-->
-              <div v-if="$route.path === '/Read/myPurchase'">
-                <PurchasePro />
-              </div>
-              <router-view></router-view>
+            <!--變ReadPro-->
+            <div v-if="$route.path === '/Read'">
+              <ReadPro />
+            </div>
+            <!--變myPurchase-->
+            <div v-if="$route.path === '/Read/myPurchase'">
+              <PurchasePro />
+            </div>
+            <router-view></router-view>
           </el-main>
-          <el-footer>Footer</el-footer>
+          <el-footer class="custom-footer">
+            <div class="footer-content">
+              <p>&copy; 2024 E-Shop. All rights reserved.</p>
+            </div>
+          </el-footer>
         </el-container>
       </el-container>
     </el-container> 
@@ -57,5 +61,31 @@ import PurchasePro from "@/views/buyer/PurchasePro.vue"
   })
 </script>
 
-<style >
+<style scoped>
+.common-layout {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.custom-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e9ecef;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 15%;
+  right: 0;
+  width: 85%;
+  z-index: 100;
+}
+
+.footer-content {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
 </style>

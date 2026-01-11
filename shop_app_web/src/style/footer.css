@@ -3,8 +3,19 @@
   bottom: 0px;
   right: 0px;
   left: 15%;
-  width: 71%;
-  background-color: navy;
-  display:flex ;
+  width: 85%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
+  border-top: 1px solid #e9ecef;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.el-footer .footer-content {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
 }

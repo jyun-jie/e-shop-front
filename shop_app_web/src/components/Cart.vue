@@ -1,83 +1,133 @@
 <template>
-  <div   class="labelname">
-    <input type="checkbox" v-model="isAllChecked" @click="doAll()">
-      <label>商品</label>
-      <label>單價</label>
-      <label>數量</label>
-      <label>總計</label>
-      <label>操作</label>
-    </input>
-  </div>
-  <form v-for="seller in Cart" class="Cart"  >
-    <input type="checkbox" 
-      :value="seller.sellerId" 
-      @click="doSellerAll(seller)"
-      v-model="SellerChecked"
-    >
-       <label>賣家Id:</label>
-       {{seller.sellerId}}
-    </input>
-    <!-- @change.prevent="doProductAll(cartProductList.id)" -->
-    <form v-for="product in seller.cartProductList" class="Cartproduct">
-      <div class="product">
-        <input type="checkbox" 
-            :value="product" 
-            class="checkbox" 
-            @click="doProduct(product,seller)"  
-            :ckeck ="isChecked(product)"
-            v-model="ProductChecked"
+  <div class="cart-container">
+    <!-- 標題和全選 -->
+    <div class="cart-header">
+      <div class="header-content">
+        <h2 class="cart-title">購物車</h2>
+        <el-checkbox 
+          v-model="isAllChecked" 
+          @change="doAll"
+          class="select-all-checkbox"
         >
-          <label>{{product.name}}</label>
-        </input>
-        <el-form-item>
-          {{product.price}} 
-        </el-form-item>
-        <el-form-item>
-          <el-input-number v-model="product.quantity" />
-        </el-form-item>
-        <br>
+          全選
+        </el-checkbox>
       </div>
-    </form>
-  </form>
-  <button @click="getsubmitCart">下訂單</button>
+    </div>
+
+    <!-- 購物車內容 -->
+    <div v-if="Cart && Cart.length > 0" class="cart-content">
+      <div v-for="seller in Cart" :key="seller.sellerId" class="seller-group">
+        <!-- 賣家標題 -->
+        <div class="seller-header">
+          <el-checkbox 
+            :model-value="SellerChecked.includes(seller.sellerId)"
+            @change="() => doSellerAll(seller)"
+            class="seller-checkbox"
+          >
+            <span class="seller-name">賣家: {{ seller.sellerId }}</span>
+          </el-checkbox>
+        </div>
+
+        <!-- 商品列表 -->
+        <div class="products-list">
+          <div 
+            v-for="product in seller.cartProductList" 
+            :key="product.id" 
+            class="product-card"
+          >
+            <el-checkbox 
+              :model-value="isChecked(product)"
+              @change="() => doProduct(product, seller)"
+              class="product-checkbox"
+            />
+            
+            <div class="product-info">
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-details">
+                <span class="product-price">NT$ {{ formatPrice(product.price) }}</span>
+                <el-input-number 
+                  v-model="product.quantity" 
+                  :min="1"
+                  :max="999"
+                  size="small"
+                  class="quantity-input"
+                />
+                <span class="product-total">
+                  小計: NT$ {{ formatPrice(product.price * product.quantity) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 結帳按鈕 -->
+      <div class="checkout-section">
+        <div class="checkout-info">
+          <span class="selected-count">已選擇 {{ ProductChecked.length }} 項商品</span>
+        </div>
+        <el-button 
+          type="primary" 
+          size="large"
+          :disabled="ProductChecked.length === 0"
+          @click="getsubmitCart"
+          class="checkout-button"
+        >
+          前往結帳
+        </el-button>
+      </div>
+    </div>
+
+    <!-- 空購物車 -->
+    <div v-else class="empty-cart">
+      <el-empty description="購物車是空的" />
+      <router-link to="/Read">
+        <el-button type="primary">去購物</el-button>
+      </router-link>
+    </div>
+  </div>
 </template>
 
 
 <script setup>
-  import { useRoute , useRouter} from 'vue-router';
-  import { ref , onMounted, reactive ,watch} from 'vue'
-  import {useTokenStore} from '@/store/index.js'
+  import { useRoute, useRouter } from 'vue-router';
+  import { ref, onMounted, computed } from 'vue'
+  import { useTokenStore } from '@/store/index.js'
   import { goCart } from '@/api/token.js'
   import { submitCart } from '@/api/token.js'
-  import axios from 'axios'
 
   const token = useTokenStore()
   const config = ref()
   const Cart = ref([]);
   const router = useRouter()
 
-
   const isAllChecked = ref(false);
   const SellerChecked = ref([]);
   const ProductChecked = ref([]);
 
+  // 格式化價格
+  const formatPrice = (price) => {
+    if (!price) return '0'
+    return Number(price).toLocaleString('zh-TW')
+  }
 
-  onMounted(()=>{
-    config.value={
-        headers: {
+  onMounted(() => {
+    config.value = {
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer `+token.token
-        }
+        'Authorization': `Bearer ${token.token}`
       }
+    }
 
-    const getgoCart = async function(){
-      let data = await goCart(config)
-      Cart.value = data.data
-      console.log(data.data)
+    const getgoCart = async function() {
+      try {
+        let data = await goCart(config)
+        Cart.value = data.data || []
+      } catch (error) {
+        console.error('載入購物車失敗:', error)
+      }
     }
     getgoCart()
-    
-    
   })
 
   //將全部都變true or false
@@ -202,40 +252,196 @@
 
 </script>
 
-<style>
-.Cart{
-  padding:50px 100px ;
-  width: 90%;
-  border: 1px solid black;
-  border-radius: 2px;
-}
-.Cartproduct{
-
-  padding:10px;
-
-}
-.labelname{
-  padding:50px 100px;
-  width: 90%;
-  border: 1px solid black;
-  border-radius: 2px;
-  display:grid;
-  grid-template-columns: 4% 50% 11% 11.4% 11% 11%;
-  
-  
+<style scoped>
+.cart-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
 }
 
-.product{
-  display:grid;
-  grid-template-columns: 4% 50% 8% 11% 14% 11%;
-  border: 1px solid blue;
-  border-radius: 2px;
-  justify-content: left;
+.cart-header {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-
-}
-.checkbox{
-  width:20px;
 }
 
+.cart-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.select-all-checkbox {
+  font-size: 15px;
+}
+
+.cart-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.seller-group {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.seller-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 16px;
+}
+
+.seller-checkbox {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.seller-name {
+  color: #333;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.product-checkbox {
+  flex-shrink: 0;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.product-details {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.product-price {
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
+.quantity-input {
+  width: 120px;
+}
+
+.product-total {
+  font-size: 16px;
+  color: #409eff;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.checkout-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 20px;
+}
+
+.checkout-info {
+  display: flex;
+  align-items: center;
+}
+
+.selected-count {
+  font-size: 16px;
+  color: #666;
+}
+
+.checkout-button {
+  min-width: 150px;
+  height: 48px;
+  font-size: 16px;
+}
+
+.empty-cart {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 12px;
+  }
+
+  .product-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-details {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .product-total {
+    margin-left: 0;
+  }
+
+  .checkout-section {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .checkout-button {
+    width: 100%;
+  }
+}
 </style>

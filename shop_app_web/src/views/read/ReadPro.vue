@@ -100,111 +100,161 @@ import {goReadPro } from '@/api/token.js'
 
 </script>
 
-<style>
-.div-container{
-  left: 15%;
-  top: 60px;
-  right: 15%;
-  bottom: 60px;
-  overflow-y: overlay;
-
-  width: 70%;
-  height: 84%;
-
-  border: double;
-
-  position:fixed;
-  
+<style scoped>
+.div-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
 }
 
-.ul-container{
-  /*不要點點*/
-  list-style:none;
-  margin: 0px;
-  padding: 0px;
+.div-container::-webkit-scrollbar {
+  width: 8px;
+}
 
-  position:relative;
+.div-container::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.div-container::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+.ul-container {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-
-  height: 94%;
-  
-  grid-template-columns: repeat(5, 1fr);
-  
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding-bottom: 40px;
 }
-.li-container{
-  border:double;
-  border-color: blue;
-  height: 96%;
-  margin-top: 2px;
+
+.li-container {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  max-height: 240px;
-
-
-  
-  top: 0px;
-  bottom: 23px;
-  right: 0px;
-
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 320px;
 }
-.update-container{
-  position: relative;
-  top: 0px;
-  height: 90%;
-  display:grid;
-  grid-template-rows: 6fr 1fr 1fr 1fr 1fr
+
+.li-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  border-color: #409eff;
+}
+
+.update-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  padding: 16px;
+}
+
+.update-container > div:first-child {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.update-container > div:not(:first-child) {
+  padding: 4px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.update-container > div:nth-child(2) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.update-container > div:nth-child(3) {
+  color: #409eff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.update-container > div:nth-child(4),
+.update-container > div:nth-child(5),
+.update-container > div:nth-child(6) {
+  color: #666;
+  font-size: 13px;
 }
 
 .load-more-trigger {
-  position: relative;
-  height: 5%;
+  height: 60px;
   text-align: center;
-  line-height: 50px;
-  color: gray;
-  top: 50px;
-  bottom: 0px; 
+  line-height: 60px;
+  color: #999;
+  font-size: 14px;
   width: 100%;
-  
+  grid-column: 1 / -1;
 }
 
-/*圖片加載*/
-.loading-container{
-
-  display: flex;
-  flex-direction: column;
-  width: 80px;
-
-  /*rotate 自定義效果名稱
-    3s 完成時間
-    linear 全程速度相同: 還有ease ease-in ease-out ease-in-out
-    infinite 設置播放次數為無限次
-  */
-  animation: rotate 3s linear infinite;
-  
+/* 圖片加載 */
+.loading-container {
+  width: 60px;
+  height: 60px;
+  animation: rotate 2s linear infinite;
 }
 
-
-
-.product-container{
-  display: flex;
-  flex-direction: column;
-  width: 80px;
+.product-container {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-
-/* 創建動畫效果 rotate 
-    rotate(*deg)表示旋轉度數 還有其他
-*/
+/* 創建動畫效果 rotate */
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
-    /*從0度開始*/ 
   }
   100% {
     transform: rotate(360deg);
-    /*360度結束* */
   }
 }
 
+/* 響應式設計 */
+@media (max-width: 1200px) {
+  .ul-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+}
 
+@media (max-width: 768px) {
+  .ul-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .li-container {
+    min-height: 280px;
+  }
+  
+  .update-container > div:first-child {
+    height: 150px;
+  }
+}
 </style>

@@ -1,67 +1,88 @@
 header {
   width: 100%;
-  background-color: orange;
+  background-color: #ffffff;
   left: 0px;
   top: 0px;
   right: 0px;
-  height: 60px;
-  z-index: 1;
-
-  display:flex ;
-  /*平均分配寬度，第一項和最後一項貼齊邊緣*/
+  height: 64px;
+  z-index: 1000;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
   position: fixed;
-
   margin-bottom: 0px;
-  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #e9ecef;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
-.left-section{
+
+.left-section {
   margin-left: 10%;
-  display:flex;
+  display: flex;
   align-items: center;
-  
 }
-.middle-section{
 
-  max-width: 500px;
-  
-  display :flex;
-  flex: 1 ;
+.middle-section {
+  max-width: 600px;
+  display: flex;
+  flex: 1;
   align-items: center;
+  margin: 0 20px;
 }
-.right-section{
+
+.right-section {
   text-align: right;
-  width: 0px;
-
   margin-right: 15%;
   display: flex;
-
-  align-items: center; /* 垂直居中 */
-  justify-content: flex-end; /* 水平靠右 */
+  align-items: center;
+  justify-content: flex-end;
   flex-shrink: 0;
+  gap: 16px;
 }
-.home-logo {
-  height: 55px;
 
+.home-logo {
+  height: 48px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
-.search-bar{
-  flex:1;
-  height:40px;
-  padding-left:10px;
-  font-size: 16px;
-  /*border-width: 1px;
-  border-style: solid;
-  border-color: rgb(192, 192, 192); 為以下*/
-  border: 1px solid rgb(192, 192, 192);
-  border-radius: 2px;
-  box-shadow: inset 1px 2px 5px rgba(0,0,0,0.05);
+
+.home-logo:hover {
+  opacity: 0.8;
+}
+
+.search-bar {
+  flex: 1;
+  height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  outline: none;
   z-index: 99;
 }
 
-.set ,
+.search-bar:focus {
+  border-color: #409eff;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+}
+
+.set,
 .short_pic {
-  margin-left: 20px;
-  height: 24px;
-  border-radius: 16px;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
   cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px;
+  background-color: #f8f9fa;
+}
+
+.set:hover,
+.short_pic:hover {
+  background-color: #e9ecef;
+  transform: scale(1.05);
 }

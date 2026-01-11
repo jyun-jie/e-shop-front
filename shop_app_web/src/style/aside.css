@@ -1,11 +1,27 @@
-.el-aside{
-
+.el-aside {
   left: 0px;
   bottom: 0px;
-  top: 60px;
+  top: 64px;
   width: 15%;
   z-index: 200;
-  /*background-color: plum;*/
-
+  background-color: #ffffff;
   position: fixed;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+  border-right: 1px solid #e9ecef;
+  overflow-y: auto;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.el-aside::-webkit-scrollbar {
+  width: 6px;
+}
+
+.el-aside::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
+}
+
+.el-aside::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
 }

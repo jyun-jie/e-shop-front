@@ -89,7 +89,15 @@ export async function goOrder(data , config){
 }
 
 export async function goPurchaseList(type ,config){
-  return await request.get("/Order/State/",{params:{type:type},...config.value})
+  // 合併 params，支持分頁參數
+  const requestConfig = {
+    ...config.value,
+    params: {
+      type: type,
+      ...(config.value?.params || {})
+    }
+  }
+  return await request.get("/Order/State/", requestConfig)
 }
 
 export async function goPickupOrder(pickupOrderList,config){
