@@ -17,14 +17,14 @@
     <div v-if="PurchaseList && PurchaseList.length">
     <div v-for="order in PurchaseList" :key="order.id" class="list" >
       <label class="checkbox-row">
-            <input
+            <input 
+              v-if="oldButtonId === 'ReadyForPickup'"
               type="checkbox"
               v-model="selectedOrders"
               :value="order.id"
             />
-              <span v-if="oldButtonId === 'Not_Ship'">選擇訂單</span>
-              <span v-else-if="oldButtonId === 'Shipping'">選擇已送出產品</span>
-              <span v-else-if="oldButtonId === 'To_Receive'">選擇未取貨產品</span>
+
+              <span v-show="oldButtonId === 'ReadyForPickup'">選擇未取貨產品</span>
       </label>
       <label>賣家Id:</label>
       
@@ -42,6 +42,7 @@
 
     <div class="ship-btn-container">
           <el-button
+            v-show="oldButtonId === 'ReadyForPickup'"
             type="primary"
             :disabled="selectedOrders.length === 0"
             @click="pickupOrder"
@@ -75,7 +76,7 @@
   const buttons = ref([
     { id: 'Not_Ship', label: '未出貨' },
     { id: 'Shipping', label: '運輸中' },
-    { id: 'Not_Paid', label: '未收款' },
+    { id: 'Not_Paid', label: '未付款' },
     { id: 'ReadyForPickup', label: '待收貨' },
     { id: 'Complete', label: '已完成' },
   ]);
@@ -133,9 +134,10 @@
 
   const pickupOrder = ()=>{
     console.log(selectedOrders.value);
-    const data = goPickupOrder(selectedOrders.value,config)
+    goPickupOrder(selectedOrders.value,config)
 
     selectedOrders.value = []
+    window.location.reload()
   }
   
 

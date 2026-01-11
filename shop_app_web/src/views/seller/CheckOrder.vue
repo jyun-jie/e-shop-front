@@ -20,13 +20,12 @@
           <!-- ✅ 訂單複選框 -->
           <label class="checkbox-row">
             <input
+              v-if="oldButtonId === 'Not_Ship'"
               type="checkbox"
               v-model="selectedOrders"
               :value="order.id"
             />
               <span v-if="oldButtonId === 'Not_Ship'">選擇訂單</span>
-              <span v-else-if="oldButtonId === 'Shipping'">選擇已送出產品</span>
-              <span v-else-if="oldButtonId === 'Shipping'">選擇已送出產品</span>
           </label>
           <label>賣家Id:</label>
           
@@ -46,6 +45,7 @@
         <!-- ✅ 出貨按鈕 -->
         <div class="ship-btn-container">
           <el-button
+            v-if="oldButtonId === 'Not_Ship'"
             type="primary"
             :disabled="selectedOrders.length === 0"
             @click="shipSelectedOrders"
@@ -143,6 +143,8 @@
       console.log("出貨訂單 ID:", selectedOrders.value)
       selectedOrders.value = []
     }
+
+
 </script>
 
 <style >
