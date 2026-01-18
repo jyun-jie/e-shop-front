@@ -244,8 +244,12 @@
   })
 
   const getsubmitCart = async function(){
-    const data = await submitCart(ProductChecked,config)
-    router.push({path:'/checkOrder', query:{data: JSON.stringify(data.data)}})
+    //const data = await submitCart(ProductChecked,config)
+    //router.push({path:'/checkOrder', query:{data: JSON.stringify(data.data)}})
+    localStorage.setItem('CHECKOUT_CART', JSON.stringify(ProductChecked.value))
+    router.push({path: '/checkOrder',
+    //query:{ProductChecked : JSON.stringify(ProductChecked.value)}
+    });
   }
 
 

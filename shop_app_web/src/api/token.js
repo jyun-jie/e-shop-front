@@ -80,7 +80,7 @@ export async function goCart(config){
 }
 
 export async function submitCart(productChecked , config){
-  return await request.post("/Order/check",productChecked.value,config.value)
+  return await request.post("/Order/check",productChecked,config.value)
 }
 
 export async function goOrder(data , config){
@@ -132,6 +132,19 @@ export async function goPaid(data ,config){
   return await request.post('/Api/Payment/changePaid?data='+ data.value, null , config.value)
 }
 
+
+export async function goQueryStoreMap(data ,config){
+  return await request.post('/Logistics/queryStoreMap',data, config.value)
+}
+
+export async function goGetStoreResult(data,config){
+  return await request.get('/Logistics/store/result?orderNo='+data,config.value);
+}
+
+
+export async function goCreateLogistics(data,config){
+  return await request.post('/Logistics/create',data,config.value);
+}
 
 
 

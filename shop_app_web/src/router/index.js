@@ -124,10 +124,6 @@ const routes =
         path :'/checkOrder' , 
         name : 'orderCheck',
         component : ()=>import('../views/cart/OrderCheck.vue'),
-        meta: {
-          requiresAuth: true,
-          roles: ["User"]
-        },
       },{
         path :'/logout' , 
         name : 'Logout',
