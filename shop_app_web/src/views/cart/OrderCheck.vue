@@ -1,307 +1,487 @@
 <template>
-  <div   class="labelname">
-      <h1>商品</h1>
-      <label>單價</label>
-      <label>數量</label>
-      <label>總計</label>
-      <label>操作</label>
-    </input>
-  </div>
-  <div>
-    <form v-for="cart in cartList" class="Cart">
-      <label>賣家id:{{cart.sellerId}}</label>
-      <div v-for="product in cart.cartProductList" class="product">
-        <label>{{product.name}}</label>
-        <label>{{product.quantity}}</label>
-        <label>{{product.price}}</label>
-        <label>{{product.quantity*product.price}}</label>
+  <div class="order-check-container">
+    <div class="order-header">
+      <h2 class="order-title">訂單確認</h2>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="cart-summary">
+      <div class="summary-header">
+        <h3>商品資訊</h3>
       </div>
-      <div class="orderButton" >
-        <label>{{cart.sellerId}}</label>
-        <label class="total">此賣家購物車商品總計:{{cart.total}}</label>
-      </div>
-    </form>
-    <p class="size">住址<input v-model="receiverAddress" class="address" placeholder="address" type="text"></input></p>
-    <select v-model="payment_method" class="option">
-      <option value="COD">貨到付款</option>
-      <option value="CREDIT_CARD">信用卡</option>
-    </select>
-    <div class="store-map-box">
-        <button
-          class="store-btn"
-          :disabled="loading"
-          @click="openStoreMap"
-        >
-          {{ loading ? '開啟中...' : '選擇取貨門市' }}
-        </button>
-
-        <div v-if="selectedStore " class="store-info">
-          <p><strong>門市名稱：</strong>{{ selectedStore.name }}</p>
-          <p><strong>門市地址：</strong>{{ selectedStore.address }}</p>
-          <p class="size">電話<input v-model="receiverPhone" class="address" placeholder="phone" type="text"></input></p>
-          <p class="size">收件住址<input v-model="getReceiverEmail" class="address" placeholder="email" type="text"></input></p>
-
-
+      
+      <div v-for="cart in cartList" :key="cart.sellerId" class="seller-group">
+        <div class="seller-header">
+          <span class="seller-label">賣家 ID: {{ cart.sellerId }}</span>
+        </div>
+        
+        <div class="products-list">
+          <div 
+            v-for="product in cart.cartProductList" 
+            :key="product.id" 
+            class="product-item"
+          >
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-details">
+              <span class="product-quantity">數量: {{ product.quantity }}</span>
+              <span class="product-price">單價: NT$ {{ formatPrice(product.price) }}</span>
+              <span class="product-total">小計: NT$ {{ formatPrice(product.quantity * product.price) }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="seller-total">
+          <span class="total-label">此賣家商品總計: NT$ {{ formatPrice(cart.total) }}</span>
         </div>
       </div>
+    </div>
 
-  </div>
-  <div class="orderButton ">
-    <button  class="size" @click="order()">下單去</button>
+    <!-- 配送資訊 -->
+    <div class="shipping-section">
+      <h3 class="section-title">配送資訊</h3>
+      
+      <el-form class="shipping-form" label-width="120px">
+        <el-form-item label="收件地址">
+          <el-input 
+            v-model="receiverAddress" 
+            placeholder="請輸入收件地址"
+            size="large"
+          />
+        </el-form-item>
+
+        <el-form-item label="付款方式">
+          <el-select v-model="payment_method" size="large" class="payment-select">
+            <el-option label="貨到付款" value="COD" />
+            <el-option label="信用卡" value="CREDIT_CARD" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="超商選擇">
+          <el-select v-model="shipType" size="large" class="store-select">
+            <el-option label="7-11" value="1" />
+            <el-option label="全家" value="2" />
+            <el-option label="萊爾富" value="3" />
+            <el-option label="OK" value="4" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button
+            type="primary"
+            :disabled="loading"
+            @click="openStoreMap"
+            size="large"
+            class="store-btn"
+          >
+            {{ loading ? '開啟中...' : '選擇取貨門市' }}
+          </el-button>
+        </el-form-item>
+
+        <div v-if="selectedStore" class="store-info-card">
+          <h4 class="store-title">已選擇門市</h4>
+          <div class="store-details">
+            <p><strong>門市名稱：</strong>{{ selectedStore.name }}</p>
+            <p><strong>門市地址：</strong>{{ selectedStore.address }}</p>
+          </div>
+          
+          <el-form-item label="聯絡電話">
+            <el-input 
+              v-model="receiverPhone" 
+              placeholder="請輸入聯絡電話"
+              size="large"
+            />
+          </el-form-item>
+          
+          <el-form-item label="電子郵件">
+            <el-input 
+              v-model="getReceiverEmail" 
+              placeholder="請輸入電子郵件"
+              size="large"
+              type="email"
+            />
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+
+    <!-- 提交按鈕 -->
+    <div class="submit-section">
+      <el-button 
+        type="primary" 
+        @click="order"
+        size="large"
+        :disabled="!canSubmit"
+        class="submit-button"
+      >
+        確認下單
+      </el-button>
+    </div>
   </div>
 </template>
 
 <script setup>
-  import { useRoute , useRouter} from 'vue-router';
-  import { ref , onMounted, reactive} from 'vue'
-  import {useTokenStore} from '@/store/index.js'
-  import { goOrder , goToPay ,goQueryStoreMap ,submitCart ,goGetStoreResult ,goCreateLogistics} from '@/api/token.js'
-  import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue'
+import { useTokenStore } from '@/store/index.js'
+import { goOrder, goToPay, goQueryStoreMap, submitCart, goGetStoreResult } from '@/api/token.js'
+import { ElMessage } from 'element-plus'
 
-  const token = useTokenStore()
-  const router = useRouter()
-  const route = useRoute()
-  const data = ref();
-  const ProductChecked = ref();
-  const config = ref()
-  const cartList = ref([])
-  const payment_method = ref('COD');
-  const receiverAddress = ref(null);
-  const receiverPhone = ref(null);
-  const getReceiverEmail = ref('');
-  const loading = ref(false)
+const token = useTokenStore()
+const router = useRouter()
+const route = useRoute()
+const data = ref();
+const ProductChecked = ref();
+const config = ref()
+const cartList = ref([])
+const payment_method = ref('COD');
+const receiverAddress = ref('');
+const receiverPhone = ref('');
+const getReceiverEmail = ref('');
+const loading = ref(false)
 
-  //const loading = ref('')
-  const orderNo = 'ORDER_20260115_001'
-  const lgsType = 'C2C'     // C2C / B2C
-  const shipType = '3'      // 1=7-11, 2=全家, 3=萊爾富, 4=OK
-  const selectedStore = ref(null)
-  const dataToSend = ref('')
+const orderNo = 'ORDER_20260115_001'
+const lgsType = 'C2C'
+const shipType = ref('1')
+const selectedStore = ref(null)
 
-  onMounted(async()=>{
-    config.value={
-        headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer `+token.token
-        }
-      }
-    const orderNo = route.query.orderNo
-    console.log(orderNo)
+// 格式化價格
+const formatPrice = (price) => {
+  if (!price) return '0'
+  return Number(price).toLocaleString('zh-TW')
+}
 
-    ProductChecked.value = JSON.parse(localStorage.getItem('CHECKOUT_CART'));
-    console.log(ProductChecked.value)
-    data.value = await submitCart(ProductChecked.value,config)
-    cartList.value = data.value.data
+// 是否可以提交
+const canSubmit = computed(() => {
+  return selectedStore.value && 
+         getReceiverEmail.value !== '' && 
+         receiverPhone.value !== '' &&
+         receiverAddress.value !== ''
+})
 
-    if(orderNo !== null || orderNo !== undefined){
-      await loadStoreFromBackend(orderNo)
-    }
-  })
-
-
-  const order = async () => {
-    try {
-      console.log(getReceiverEmail.value )
-      if (!selectedStore.value || getReceiverEmail.value === ''  || receiverPhone.value === ''  ) {
-        alert('請先選擇取貨門市')
-        return
-      }
-
-      console.log(payment_method.value);
-      console.log(getReceiverEmail.value)
-      console.log(receiverPhone.value)
-      
-      if(payment_method.value === 'COD' ){
-        dataToSend.value = {
-          cartList: cartList.value,
-          payment_method: payment_method.value,
-          receiverPhone:  receiverPhone.value,
-          receiverEmail: getReceiverEmail.value,
-          pickupStoreId: selectedStore.value.id,
-          pickupStoreName: selectedStore.value.name,
-          pickupStoreAddress: selectedStore.value.address,
-          pickupStoreType: selectedStore.value.type,
-          deliveryType: selectedStore.value.lgsType
-        }
-      }else{
-        dataToSend.value = {
-          cartList: cartList.value,
-          payment_method: payment_method.value,
-          receiverAddress: receiverAddress.value,
-        }
-      }
-      console.log(dataToSend.value)
-      
-      //master order id
-      const orderRes = await goOrder(dataToSend.value, config)
-      console.log(orderRes)
-
-      if (orderRes.code === 1) { // failed
-        alert(orderRes.message)
-        return
-      }
-
-      const LogisticsDTO = {
-        orderId : orderRes.data,
-        storeType : selectedStore.value.type,
-        isCod : payment_method.value === 'COD' ? true : false,
-        receiverPhone:receiverPhone.value,
-        receiverEmail:getReceiverEmail.value
-      }
-
-      const payRes = await goToPay(orderRes.data, config)
-
-      document.open()
-      document.write(payRes)
-      document.close()
-
-      console.log(payRes)
-      
-      /*goCreateLogistics( LogisticsDTO,config).then(res =>{
-        console.log(res.data)
-      })*/
-      
-      
-
-
-    } catch (err) {
-      console.error(err)
-      alert("付款發生錯誤")
+onMounted(async () => {
+  config.value = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token.token}`
     }
   }
+  
+  const orderNo = route.query.orderNo
+  console.log(orderNo)
 
+  ProductChecked.value = JSON.parse(localStorage.getItem('CHECKOUT_CART'));
+  console.log(ProductChecked.value)
+  data.value = await submitCart(ProductChecked.value, config)
+  cartList.value = data.value.data
 
-  const openStoreMap = async () => {
+  if (orderNo !== null && orderNo !== undefined) {
+    await loadStoreFromBackend(orderNo)
+  }
+})
+
+const order = async () => {
+  try {
+    if (!selectedStore.value || getReceiverEmail.value === '' || receiverPhone.value === '') {
+      ElMessage.warning('請先選擇取貨門市並填寫完整資訊')
+      return
+    }
+
+    const dataToSend = {
+      cartList: cartList.value,
+      payment_method: payment_method.value,
+      receiverPhone: receiverPhone.value,
+      receiverEmail: getReceiverEmail.value,
+      receiverAddress: receiverAddress.value,
+      pickupStoreId: selectedStore.value.id,
+      pickupStoreName: selectedStore.value.name,
+      pickupStoreAddress: selectedStore.value.address,
+      pickupStoreType: selectedStore.value.type,
+      deliveryType: selectedStore.value.lgsType
+    }
+
+    const orderRes = await goOrder(dataToSend, config)
+    console.log(orderRes)
+
+    if (orderRes.code === 1) {
+      ElMessage.error(orderRes.message)
+      return
+    }
+
+    const payRes = await goToPay(orderRes.data, config)
+
+    document.open()
+    document.write(payRes)
+    document.close()
+
+  } catch (err) {
+    console.error(err)
+    ElMessage.error("付款發生錯誤")
+  }
+}
+
+const openStoreMap = async () => {
   loading.value = true
   try {
-    goQueryStoreMap({orderNo,lgsType,shipType},config).then(res =>{
+    goQueryStoreMap({ orderNo, lgsType, shipType: shipType.value }, config).then(res => {
       const { actionUrl, formData } = res.data
       console.log(res.data)
       submitStoreMapForm(actionUrl, formData)
     })
-
   } catch (err) {
-    alert('開啟門市地圖失敗')
+    ElMessage.error('開啟門市地圖失敗')
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-/**
- * 動態建立 form → POST 到藍新
- */
-  const submitStoreMapForm =async (actionUrl, formData) => {
-    try {
-      console.log(actionUrl)
-      console.log(formData) 
-      // 開啟新視窗
-      //const popup = window.open('', 'newebpay', 'width=1000,height=800');
-      
-      // 建立表單
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = actionUrl;
-      
-      // 加入表單欄位
-      Object.entries(formData).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      });
+const submitStoreMapForm = async (actionUrl, formData) => {
+  try {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = actionUrl;
 
-      
-      console.log(form)
-      // 提交表單
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
+    Object.entries(formData).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    });
 
-
-    } catch (error) {
-      console.error('開啟門市地圖失敗:', error);
-    }
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+  } catch (error) {
+    console.error('開啟門市地圖失敗:', error);
   }
-  const loadStoreFromBackend = async (orderNo) => {
-    try {
+}
 
-      const res = await goGetStoreResult( orderNo ,config) ; 
-      console.log(res)
-      
+const loadStoreFromBackend = async (orderNo) => {
+  try {
+    const res = await goGetStoreResult(orderNo, config);
 
-      if (!res.data) return
+    if (!res.data) return
 
-      selectedStore.value = {
-        id: res.data.storeId,
-        name: res.data.storeName,
-        address: res.data.storeAddress,
-        type: res.data.storeType,
-        lgsType: res.data.lgsType
-      }
-      
-
-      console.log('已選門市', selectedStore.value)
-    } catch (e) {
-      // 第一次進來沒選門市是正常的
-      console.log('尚未選擇門市')
+    selectedStore.value = {
+      id: res.data.storeId,
+      name: res.data.storeName,
+      address: res.data.storeAddress,
+      type: res.data.storeType,
+      lgsType: res.data.lgsType
     }
+
+    console.log('已選門市', selectedStore.value)
+  } catch (e) {
+    console.log('尚未選擇門市')
   }
-
-
-
+}
 </script>
 
-<style>
-.Cart{
-  padding:50px 100px ;
-  width: 90%;
-  border: 1px solid black;
-  border-radius: 2px;
+<style scoped>
+.order-check-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
 }
-.labelname{
-  padding:50px 100px;
-  width: 90%;
-  border: 1px solid black;
-  border-radius: 2px;
-  display:grid;
-  grid-template-columns: 47% 11% 11.4% 11% 11%;
-  align-items: center;
-  font-size:30px
-  
-}
-.product{
-  display:grid;
-  grid-template-columns: 47% 8% 11% 14% 11%;
-  border: 1px solid blue;
-  border-radius: 2px;
-  justify-content: left;
-  align-items: center;
-  
-  margin-bottom: 50px;
-  font-size:30px
 
+.order-header {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-.total{
-  text-align:right;
+
+.order-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
 }
-.orderButton{
+
+.cart-summary {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.summary-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.summary-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.seller-group {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.seller-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.seller-header {
+  margin-bottom: 16px;
+}
+
+.seller-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.products-list {
   display: flex;
-  justify-content: flex-end;
-   align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
 }
-.size{
-  font-size: 50px;
+
+.product-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
 }
-.address{
-  width:400px;
-  height: 60px;
-  font-size:40px;
+
+.product-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
 }
-.option{
-  width:200px;
-  height: 60px;
-  font-size:40px;
+
+.product-details {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
-</style>>
+
+.product-quantity,
+.product-price {
+  font-size: 14px;
+  color: #666;
+}
+
+.product-total {
+  font-size: 16px;
+  color: #409eff;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.seller-total {
+  text-align: right;
+  padding-top: 12px;
+  border-top: 1px solid #e9ecef;
+}
+
+.total-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: #409eff;
+}
+
+.shipping-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.shipping-form {
+  width: 100%;
+}
+
+.payment-select,
+.store-select {
+  width: 100%;
+}
+
+.store-btn {
+  width: 100%;
+  height: 48px;
+}
+
+.store-info-card {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.store-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.store-details {
+  margin-bottom: 20px;
+}
+
+.store-details p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.submit-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  bottom: 20px;
+}
+
+.submit-button {
+  width: 100%;
+  height: 56px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .order-check-container {
+    padding: 12px;
+  }
+
+  .product-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .product-total {
+    margin-left: 0;
+  }
+}
+</style>

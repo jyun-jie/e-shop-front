@@ -1,108 +1,196 @@
 <template>
-  <el-form :model="product" label-width="auto" style="max-width: 600px">
-    <el-form-item label="產品名稱">
-      <el-input v-model="product.name" />
-    </el-form-item>
-    <el-form-item label="產品封面圖片">
-      <div class="image-item">
-        <img v-if="coverWatch" :src="coverWatch.url" alt="封面" />
-        <input type="file" class="image-item" accept="image/*" @change="selectNewCover" />
-      </div>
-    </el-form-item>
-    <el-form-item label="產品類型">
-      <el-select v-model="product.type" placeholder="請選擇類型">
-        <el-option label="電子" value="electronic" />
-        <el-option label="民生" value="livelihood" />
-      </el-select>
-    </el-form-item>
-    <el-form-item label="產品價格">
-      <el-input v-model="product.price" />
-    </el-form-item>
-    <el-form-item label="產品數量">
-    <el-input-number v-model="product.quantity" @change="handleChange" />
-    </el-form-item>
-    <el-form-item label="(假設)產品圖片地址">
-      <div 
-        v-for="(img ,index) in images" 
-        :key="img.id" 
-        class="image-item"
-        @click="removeImage(img ,index)"
+  <div class="update-pro-container">
+    <div class="form-card">
+      <h2 class="form-title">編輯商品</h2>
+      
+      <el-form 
+        :model="product" 
+        label-width="120px" 
+        class="product-form"
+        ref="formRef"
       >
-        <img :src="img.url"/>
-      </div>
-
-
-       <div class="add-image-box">
-        <input 
-          type="file" 
-          multiple
-          accept="image/*"
-          @change="onSelectImages"
-        />
-        <p>新增圖片</p>
-      </div>
-    </el-form-item>
-    <el-form-item label="發送地址">
-      <el-input v-model="product.address" />
-    </el-form-item>
-    <el-form-item label="產品描述">
-      <el-input v-model="product.description" type="textarea" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="updateProduct">Update</el-button>
-      <el-button @click="Cancel">Cancel</el-button>
-    </el-form-item>
-  </el-form>
+        <el-form-item label="產品名稱">
+          <el-input 
+            v-model="product.name" 
+            placeholder="請輸入產品名稱"
+            size="large"
+          />
+        </el-form-item>
+        
+        <el-form-item label="產品封面圖片">
+          <div class="cover-section">
+            <div v-if="coverWatch" class="cover-preview">
+              <img :src="coverWatch.url" alt="封面" />
+              <el-button 
+                type="danger" 
+                size="small"
+                @click="removeCover"
+                class="remove-btn"
+              >
+                移除
+              </el-button>
+            </div>
+            <el-upload
+              :auto-upload="false"
+              :on-change="selectNewCover"
+              :show-file-list="false"
+              accept="image/*"
+            >
+              <el-button type="primary">選擇新封面</el-button>
+            </el-upload>
+          </div>
+        </el-form-item>
+        
+        <el-form-item label="產品類型">
+          <el-select 
+            v-model="product.type" 
+            placeholder="請選擇類型"
+            size="large"
+            style="width: 100%"
+          >
+            <el-option label="電子" value="electronic" />
+            <el-option label="民生" value="livelihood" />
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="產品價格">
+          <el-input-number 
+            v-model="product.price" 
+            :min="0"
+            :precision="2"
+            size="large"
+            style="width: 100%"
+          />
+        </el-form-item>
+        
+        <el-form-item label="產品數量">
+          <el-input-number 
+            v-model="product.quantity" 
+            :min="1"
+            size="large"
+            style="width: 100%"
+          />
+        </el-form-item>
+        
+        <el-form-item label="產品圖片">
+          <div class="images-section">
+            <div 
+              v-for="(img, index) in images" 
+              :key="img.id" 
+              class="image-item"
+            >
+              <img :src="img.url" />
+              <el-button 
+                type="danger" 
+                size="small"
+                @click="removeImage(img, index)"
+                class="remove-btn"
+              >
+                刪除
+              </el-button>
+            </div>
+            <el-upload
+              :auto-upload="false"
+              :on-change="onSelectImages"
+              :multiple="true"
+              accept="image/*"
+              list-type="picture-card"
+              class="add-image-upload"
+            >
+              <el-icon><Plus /></el-icon>
+            </el-upload>
+          </div>
+        </el-form-item>
+        
+        <el-form-item label="發送地址">
+          <el-input 
+            v-model="product.address" 
+            placeholder="請輸入發送地址"
+            size="large"
+          />
+        </el-form-item>
+        
+        <el-form-item label="產品描述">
+          <el-input 
+            v-model="product.description" 
+            type="textarea" 
+            :rows="4"
+            placeholder="請輸入產品描述"
+          />
+        </el-form-item>
+        
+        <el-form-item>
+          <el-button 
+            type="primary" 
+            @click="updateProduct"
+            size="large"
+            :loading="isSubmitting"
+            class="submit-button"
+          >
+            更新商品
+          </el-button>
+          <el-button 
+            @click="Cancel"
+            size="large"
+            class="cancel-button"
+          >
+            取消
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script setup>
-  import { useRoute , useRouter} from 'vue-router';
-  import { ref , onMounted, reactive} from 'vue'
-  import {useTokenStore} from '@/store/index.js'
-  import { goDetailPro ,goUpdateProduct } from '@/api/token.js'
-  import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useTokenStore } from '@/store/index.js'
+import { goDetailPro, goUpdateProduct } from '@/api/token.js'
+import { ElMessage } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
 
-  const token = useTokenStore()
-  //使用route 
-  const route = useRoute()
-  const router = useRouter()
-  //獲取 router link 傳過來的參數
-  const proid = route.params.id;
-  const config = ref()
-  const product = ref({
-    id: 0,
-    name: '',
-    type: '',
-    price: 0,
-    quantity: 0,
-    imageUrl: '',
-    address: '',
-    description: ''
-  });
-  const images = ref([])
-  const newImages = ref([])
-  const deleteImages = ref([])
-  const coverWatch = ref();
-  let isCoverChange = ref(false);
-  const cover = ref()
+const token = useTokenStore()
+const route = useRoute()
+const router = useRouter()
+const proid = route.params.id;
+const config = ref()
+const formRef = ref(null)
+const isSubmitting = ref(false)
 
-  onMounted(()=>{
-    config.value={
-        headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer `+token.token
-        }
-      }
+const product = ref({
+  id: 0,
+  name: '',
+  type: '',
+  price: 0,
+  quantity: 0,
+  imageUrl: '',
+  address: '',
+  description: ''
+});
 
-    const getGoDetailPro = async function(){
-      let res = await goDetailPro(proid,config)
-      
+const images = ref([])
+const newImages = ref([])
+const deleteImages = ref([])
+const coverWatch = ref();
+let isCoverChange = ref(false);
+const cover = ref()
+
+onMounted(() => {
+  config.value = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token.token}`
+    }
+  }
+
+  const getGoDetailPro = async function () {
+    try {
+      let res = await goDetailPro(proid, config)
       const list = res.data
       console.log(list)
 
-      
-
-      product.value=list[0];
+      product.value = list[0];
       images.value = list.map(p => ({
         id: p.imageId,
         url: p.imageUrl,
@@ -111,126 +199,188 @@
 
       coverWatch.value = images.value.find(img => img.type === 'cover');
       images.value = images.value.filter(img => img.type !== 'cover');
-      console.log(coverWatch.value)
-      console.log(images.value)
+    } catch (error) {
+      ElMessage.error('載入商品資訊失敗')
     }
-    getGoDetailPro()
-  })
+  }
+  getGoDetailPro()
+})
 
-  //確定更新
-  const updateProduct = (async ()=>{
+const updateProduct = async () => {
+  try {
+    isSubmitting.value = true
+
     const dto = {
-      id : proid,
-      name: product.name,
-      type: product.type,
-      price: product.price,
-      quantity: product.quantity,
-      address: product.address,
-      description: product.description
+      id: proid,
+      name: product.value.name,
+      type: product.value.type,
+      price: product.value.price,
+      quantity: product.value.quantity,
+      address: product.value.address,
+      description: product.value.description
     }
 
-      const formData = new FormData();
-      const jsonBlob = new Blob([JSON.stringify(dto)], { type: "application/json" });
-      formData.append("data", jsonBlob);
+    const formData = new FormData();
+    const jsonBlob = new Blob([JSON.stringify(dto)], { type: "application/json" });
+    formData.append("data", jsonBlob);
 
-      newImages.value.forEach(file => {
-        formData.append("newImages", file);
-      });
-      
-      if(isCoverChange === true ){
-        formData.append("cover" , cover.value) ; 
-        console.log("丟cover")
-      }else{
-        formData.append("cover", null) ; 
-      }
-      
-
-      formData.append("deleteImages",new Blob([JSON.stringify(deleteImages.value)], { type: "application/json" }) );
-
-
-      console.log(formData.get("data"));
-      console.log(formData.getAll("newImages"));
-      console.log(formData.getAll("deleteImages"));
-      console.log(formData.get("cover"));
-
-
-
-      let data = await goUpdateProduct(formData,config)
-      console.log(data)
-  })
-
-
-  //不要更新
-  const Cancel = (()=>{
-    router.push("/seller")
-  })
-
-  const removeImage = (img , index) => {
-    deleteImages.value.push({
-      id : img.id,
-      url: img.url,
+    newImages.value.forEach(file => {
+      formData.append("newImages", file.raw || file);
     });
 
-    images.value.splice(index, 1)
-
-    console.log(deleteImages.value)
-  }
-  
-  const onSelectImages = (event)=>{
-    const files = event.target.files
-    newImages.value = Array.from(files)
-    console.log("上傳圖片 : " + newImages.value)
-  }
-
-  const selectNewCover = (event)=>{
-    const file = event.target.files[0]
-    if (!file) return
-
-    deleteImages.value.push(coverWatch.value)
-
-      
-
-    // 生成暫時 URL，用來在頁面預覽
-    const url = URL.createObjectURL(file)
-    isCoverChange = true ; 
-    coverWatch.value = {
-      url : url ,
+    if (isCoverChange.value === true) {
+      formData.append("cover", cover.value);
+    } else {
+      formData.append("cover", null);
     }
-    cover.value= file ; 
-    console.log(deleteImages.value)
-    console.log(cover.value)
+
+    formData.append("deleteImages", new Blob([JSON.stringify(deleteImages.value)], { type: "application/json" }));
+
+    let data = await goUpdateProduct(formData, config)
+    ElMessage.success('商品更新成功')
+    router.push("/seller")
+  } catch (error) {
+    console.error('更新商品失敗:', error)
+    ElMessage.error('更新商品失敗，請稍後再試')
+  } finally {
+    isSubmitting.value = false
   }
+}
 
+const Cancel = () => {
+  router.push("/seller")
+}
 
+const removeImage = (img, index) => {
+  deleteImages.value.push({
+    id: img.id,
+    url: img.url,
+  });
+  images.value.splice(index, 1)
+}
+
+const onSelectImages = (file, fileList) => {
+  newImages.value = fileList
+}
+
+const selectNewCover = (file) => {
+  if (!file) return
+
+  deleteImages.value.push(coverWatch.value)
+
+  const url = URL.createObjectURL(file.raw || file)
+  isCoverChange.value = true;
+  coverWatch.value = {
+    url: url,
+  }
+  cover.value = file.raw || file;
+}
+
+const removeCover = () => {
+  if (coverWatch.value) {
+    deleteImages.value.push(coverWatch.value)
+    coverWatch.value = null
+    isCoverChange.value = true
+  }
+}
 </script>
 
-<style>
-.image-list {
-  display: flex;
-  gap: 10px;
+<style scoped>
+.update-pro-container {
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: #f5f5f5;
+  padding: 20px;
 }
-.image-item img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  cursor: pointer;
-  border: 2px solid transparent;
+
+.form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #ffffff;
   border-radius: 8px;
-  transition: 0.2s;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
-.image-item img:hover {
-  border-color: red;
-  opacity: 0.8;
+
+.form-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 24px 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
 }
-.add-image-box {
+
+.product-form {
+  width: 100%;
+}
+
+.cover-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cover-preview {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.images-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.image-item {
+  position: relative;
   width: 120px;
   height: 120px;
-  border: 2px dashed #aaa;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.add-image-upload {
+  width: 120px;
+  height: 120px;
+}
+
+.submit-button {
+  min-width: 120px;
+  height: 48px;
+}
+
+.cancel-button {
+  min-width: 120px;
+  height: 48px;
+}
+
+@media (max-width: 768px) {
+  .form-card {
+    padding: 20px;
+  }
 }
 </style>

@@ -42,6 +42,14 @@
               >
                 <span>未確認訂單</span>
               </router-link>
+              <router-link 
+                to="/printLogistics" 
+                class="nav-item"
+                :class="{ active: $route.path === '/printLogistics' }"
+              >
+                <span>列印出貨單</span>
+              </router-link>
+
             </nav>
           </div>
         </el-aside>

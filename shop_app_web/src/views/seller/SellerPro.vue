@@ -1,232 +1,312 @@
 <template>
-  <div class="div-container" ref="scrollContainer">
-  <ul class="ul-container">
-        <li v-for="pro in product" class="li-container" >
-          <!--:to="name=網址 param = post傳值"-->
-          <router-link :to="{name:'update',params:{id:pro.id}}" class="update-container">
-            <div>
-              <img id="img" v-if="pro.imageUrl === null || pro.imageUrl==='' " src="@/image/loading.svg" class="loading-container" alt="產品圖片" >
-              <img id="img" v-else :src="pro.imageUrl" class="product-container" >
-            </div>
-            <div>
-              {{pro.name}}
-            </div>
-              <div>{{pro.price}}</div>
-              <div>{{pro.rate}}</div>
-              <div>{{pro.address}}</div>
-          </router-link>
-            <div class="del-button"><button @click="goTakeDown(pro.id)">下架</button></div>
-        </li>
-  </ul>
-  <div ref="loadMoreTrigger" class="load-more-trigger" >Loading more...</div>
+  <div class="seller-pro-container" ref="scrollContainer">
+    <div class="products-grid">
+      <div 
+        v-for="pro in product" 
+        :key="pro.id" 
+        class="product-card"
+      >
+        <router-link 
+          :to="{name:'update',params:{id:pro.id}}" 
+          class="product-link"
+        >
+          <div class="product-image">
+            <img 
+              v-if="pro.imageUrl === null || pro.imageUrl===''" 
+              src="@/image/loading.svg" 
+              class="loading-container" 
+              alt="產品圖片"
+            >
+            <img 
+              v-else 
+              :src="pro.imageUrl" 
+              class="product-img"
+              :alt="pro.name"
+            >
+          </div>
+          <div class="product-info">
+            <div class="product-name">{{ pro.name }}</div>
+            <div class="product-price">NT$ {{ formatPrice(pro.price) }}</div>
+            <div class="product-rate">評分: {{ pro.rate || 'N/A' }}</div>
+            <div class="product-address">{{ pro.address }}</div>
+          </div>
+        </router-link>
+        <div class="product-actions">
+          <el-button 
+            type="danger" 
+            size="small"
+            @click="goTakeDown(pro.id)"
+            class="action-btn"
+          >
+            下架
+          </el-button>
+        </div>
+      </div>
+    </div>
+    
+    <div 
+      ref="loadMoreTrigger" 
+      class="load-more-trigger"
+    >
+      <span v-if="hasMore">載入更多...</span>
+      <span v-else>已載入全部商品</span>
+    </div>
   </div>
 </template>
 
-
 <script setup>
-import axios from 'axios'
-import {useRouter} from 'vue-router'
-import {onMounted , reactive,ref , onUnmounted} from 'vue'
-import {useTokenStore} from '@/store/index.js'
-import {goSellerPro} from '@/api/token.js'
-import { Loading } from 'element-plus/es/components/loading/src/service'
+import { useRouter } from 'vue-router'
+import { onMounted, ref, onUnmounted } from 'vue'
+import { useTokenStore } from '@/store/index.js'
+import { goSellerPro } from '@/api/token.js'
+import { ElMessageBox } from 'element-plus'
 
-  const router = useRouter()
-  const product = ref([])
-  const config = ref()
-  const token = useTokenStore()
-  
-  
-  const scrollContainer = ref(null)
-  //分頁加載
-  const pageNum = ref(0)//當前頁
-  const pageSize = ref(15) //加載條數
-  const loadMoreTrigger = ref(null)
+const router = useRouter()
+const product = ref([])
+const config = ref()
+const token = useTokenStore()
 
-  onMounted(()=>{
+const scrollContainer = ref(null)
+const pageNum = ref(0)
+const pageSize = ref(15)
+const loadMoreTrigger = ref(null)
+const hasMore = ref(true)
+let observer = null
 
-    getGoSellerPro()
+// 格式化價格
+const formatPrice = (price) => {
+  if (!price) return '0'
+  return Number(price).toLocaleString('zh-TW')
+}
 
-    //當Trigger 進入畫面就觸發加載 
-    //並觀察trigger 變化
-    if (loadMoreTrigger.value) {
-      observer.observe(loadMoreTrigger.value)
-    }
-    
-  })
-
-  config.value={
+onMounted(() => {
+  config.value = {
     headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer `+token.token
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token.token}`
     }
-  }
-    
-  const getGoSellerPro =async function(){
-    let params ={
-      pageNum:pageNum.value,
-      pageSize:pageSize.value,
-      status:"in_stock",
-    }
-    let data = await goSellerPro(params,config)
-    console.log(data)
-    if(data.data !== null){
-      pageNum.value = data.data.pageNum
-      //展開各自的object 並相加再組成陣列
-      product.value = [...product.value,...data.data.productList]
-      console.log(pageNum.value)
-      console.log(product.value)
-    }
-    
   }
 
-  const observer = new IntersectionObserver(
+  getGoSellerPro()
+
+  if (loadMoreTrigger.value) {
+    observer = new IntersectionObserver(
       (entries) => {
-        //是否進到觀察畫面裡
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore.value) {
           getGoSellerPro()
         }
       },
-      { 
-        //觀察的元素
-        root:scrollContainer.value,
+      {
+        root: scrollContainer.value,
+        rootMargin: '100px',
+        threshold: 0.1
       }
     )
-
-  const goTakeDown = async function(proid){
-    let result = confirm("確認是否下架 ") // 給出是否確認刪除窗口 是/否
-    if(result === true ){
-      await router.push({name:'takeDown',params:{id:proid}})
-      
-    }else{
-      await router.push("/seller")
-      alert("取消刪除")
-    }
+    observer.observe(loadMoreTrigger.value)
   }
+})
 
-  onUnmounted(()=>{
-    if (loadMoreTrigger.value) {
-
-      observer.unobserve(loadMoreTrigger.value)
+const getGoSellerPro = async function () {
+  try {
+    let params = {
+      pageNum: pageNum.value,
+      pageSize: pageSize.value,
+      status: "in_stock",
     }
-  })
-  
+    let data = await goSellerPro(params, config)
+    console.log(data)
+    
+    if (data.data !== null) {
+      pageNum.value = data.data.pageNum
+      product.value = [...product.value, ...data.data.productList]
+      
+      if (data.data.productList.length < pageSize.value) {
+        hasMore.value = false
+      } else {
+        pageNum.value += 1
+      }
+    } else {
+      hasMore.value = false
+    }
+  } catch (error) {
+    console.error('載入商品失敗:', error)
+    hasMore.value = false
+  }
+}
 
+const goTakeDown = async function (proid) {
+  try {
+    await ElMessageBox.confirm('確認是否下架此商品？', '確認下架', {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    await router.push({ name: 'takeDown', params: { id: proid } })
+  } catch {
+    // 用戶取消
+  }
+}
 
-
-
+onUnmounted(() => {
+  if (observer && loadMoreTrigger.value) {
+    observer.unobserve(loadMoreTrigger.value)
+  }
+})
 </script>
 
-<style>
-.div-container{
-  left: 15%;
-  top: 60px;
-  right: 15%;
-  bottom: 60px;
-  overflow-y: overlay;
-
-  width: 70%;
-  height: 84%;
-
-  border: double;
-
-  position:fixed;
-  
-}
-
-.ul-container{
-  /*不要點點*/
-  list-style:none;
-  margin: 0px;
-  padding: 0px;
-
-  position:relative;
-  display: grid;
-
-  height: 94%;
-  
-  grid-template-columns: repeat(5, 1fr);
-  
-}
-.li-container{
-  border:double;
-  border-color: blue;
-  height: 96%;
-  margin-top: 2px;
-  display: flex;
-  flex-direction: column;
-  max-height: 240px;
-
-
-  
-  top: 0px;
-  bottom: 23px;
-  right: 0px;
-
-}
-.update-container{
-  position: relative;
-  bottom: 23px;
-  top: 0px;
-  height: 90%;
-  display:grid;
-  grid-template-rows: 6fr 1fr 1fr 1fr 1fr
-}
-.del-button{
-  position: relative;
-  height: 23px;
-  bottom: 0px;
-  right: 0px;
-
-}
-.load-more-trigger {
-  position: relative;
-  height: 5%;
-  text-align: center;
-  line-height: 50px;
-  color: gray;
-  top: 50px;
-  bottom: 0px; 
+<style scoped>
+.seller-pro-container {
   width: 100%;
-  
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
 }
 
+.seller-pro-container::-webkit-scrollbar {
+  width: 8px;
+}
 
-.loading-container{
+.seller-pro-container::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
 
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+.product-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  width: 80px;
-
-  /*rotate 自定義效果名稱
-    3s 完成時間
-    linear 全程速度相同: 還有ease ease-in ease-out ease-in-out
-    infinite 設置播放次數為無限次
-  */
-  animation: rotate 3s linear infinite;
-  
+  min-height: 320px;
 }
 
+.product-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  border-color: #409eff;
+}
 
-.product-container{
+.product-link {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  width: 80px;
+  text-decoration: none;
+  color: inherit;
+  padding: 16px;
 }
 
-/* 創建動畫效果 rotate 
-    rotate(*deg)表示旋轉度數 還有其他
-*/
+.product-image {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.loading-container {
+  width: 60px;
+  height: 60px;
+  animation: rotate 2s linear infinite;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-price {
+  color: #409eff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.product-rate,
+.product-address {
+  font-size: 13px;
+  color: #666;
+}
+
+.product-actions {
+  padding: 12px 16px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: center;
+}
+
+.action-btn {
+  width: 100%;
+}
+
+.load-more-trigger {
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  color: #999;
+  font-size: 14px;
+  grid-column: 1 / -1;
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
-    /*從0度開始*/ 
   }
   100% {
     transform: rotate(360deg);
-    /*360度結束* */
   }
 }
 
+@media (max-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+}
 
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .product-card {
+    min-height: 280px;
+  }
+  
+  .product-image {
+    height: 150px;
+  }
+}
 </style>

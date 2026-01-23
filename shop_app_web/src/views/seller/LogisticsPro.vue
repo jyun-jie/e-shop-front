@@ -64,7 +64,7 @@
     const router = useRouter()
     const logisticOrder = ref([])
 
-    const oldButtonId = ref('7-ELEVEN')
+    const oldButtonId = ref('1')
     const activeButton = ref('button1');
     const underlineStyle = ref({});
     const isfirstEntry = ref(true)
