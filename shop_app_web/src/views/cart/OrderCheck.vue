@@ -35,9 +35,13 @@
           {{ loading ? '開啟中...' : '選擇取貨門市' }}
         </button>
 
-        <div v-if="selectedStore" class="store-info">
+        <div v-if="selectedStore " class="store-info">
           <p><strong>門市名稱：</strong>{{ selectedStore.name }}</p>
           <p><strong>門市地址：</strong>{{ selectedStore.address }}</p>
+          <p class="size">電話<input v-model="receiverPhone" class="address" placeholder="phone" type="text"></input></p>
+          <p class="size">收件住址<input v-model="getReceiverEmail" class="address" placeholder="email" type="text"></input></p>
+
+
         </div>
       </div>
 
@@ -51,7 +55,7 @@
   import { useRoute , useRouter} from 'vue-router';
   import { ref , onMounted, reactive} from 'vue'
   import {useTokenStore} from '@/store/index.js'
-  import { goOrder , goToPay ,goQueryStoreMap ,submitCart ,goGetStoreResult} from '@/api/token.js'
+  import { goOrder , goToPay ,goQueryStoreMap ,submitCart ,goGetStoreResult ,goCreateLogistics} from '@/api/token.js'
   import axios from 'axios'
 
   const token = useTokenStore()
@@ -61,15 +65,18 @@
   const ProductChecked = ref();
   const config = ref()
   const cartList = ref([])
-  const payment_method = ref('');
-  const receiverAddress = ref('');
-
+  const payment_method = ref('COD');
+  const receiverAddress = ref(null);
+  const receiverPhone = ref(null);
+  const getReceiverEmail = ref('');
   const loading = ref(false)
+
+  //const loading = ref('')
   const orderNo = 'ORDER_20260115_001'
   const lgsType = 'C2C'     // C2C / B2C
   const shipType = '3'      // 1=7-11, 2=全家, 3=萊爾富, 4=OK
   const selectedStore = ref(null)
-
+  const dataToSend = ref('')
 
   onMounted(async()=>{
     config.value={
@@ -94,27 +101,52 @@
 
   const order = async () => {
     try {
-      if (!selectedStore.value) {
+      console.log(getReceiverEmail.value )
+      if (!selectedStore.value || getReceiverEmail.value === ''  || receiverPhone.value === ''  ) {
         alert('請先選擇取貨門市')
         return
       }
+
       console.log(payment_method.value);
-      console.log(receiverAddress.value)
-
-      const dataToSend = {
-        cartList: cartList.value,
-        payment_method: payment_method.value,
-        receiverAddress: receiverAddress.value,
-        storeId: selectedStore.value.id,
-        storeName: selectedStore.value.name,
-        storeAddress: selectedStore.value.address
+      console.log(getReceiverEmail.value)
+      console.log(receiverPhone.value)
+      
+      if(payment_method.value === 'COD' ){
+        dataToSend.value = {
+          cartList: cartList.value,
+          payment_method: payment_method.value,
+          receiverPhone:  receiverPhone.value,
+          receiverEmail: getReceiverEmail.value,
+          pickupStoreId: selectedStore.value.id,
+          pickupStoreName: selectedStore.value.name,
+          pickupStoreAddress: selectedStore.value.address,
+          pickupStoreType: selectedStore.value.type,
+          deliveryType: selectedStore.value.lgsType
+        }
+      }else{
+        dataToSend.value = {
+          cartList: cartList.value,
+          payment_method: payment_method.value,
+          receiverAddress: receiverAddress.value,
+        }
       }
-      const orderRes = await goOrder(dataToSend, config)
-      console.log(orderRes.data)
+      console.log(dataToSend.value)
+      
+      //master order id
+      const orderRes = await goOrder(dataToSend.value, config)
+      console.log(orderRes)
 
-      if (orderRes.code === 1) {
+      if (orderRes.code === 1) { // failed
         alert(orderRes.message)
         return
+      }
+
+      const LogisticsDTO = {
+        orderId : orderRes.data,
+        storeType : selectedStore.value.type,
+        isCod : payment_method.value === 'COD' ? true : false,
+        receiverPhone:receiverPhone.value,
+        receiverEmail:getReceiverEmail.value
       }
 
       const payRes = await goToPay(orderRes.data, config)
@@ -123,7 +155,13 @@
       document.write(payRes)
       document.close()
 
-      goCreateLogistics(config);
+      console.log(payRes)
+      
+      /*goCreateLogistics( LogisticsDTO,config).then(res =>{
+        console.log(res.data)
+      })*/
+      
+      
 
 
     } catch (err) {
@@ -135,7 +173,6 @@
 
   const openStoreMap = async () => {
   loading.value = true
-
   try {
     goQueryStoreMap({orderNo,lgsType,shipType},config).then(res =>{
       const { actionUrl, formData } = res.data
@@ -203,6 +240,7 @@
         type: res.data.storeType,
         lgsType: res.data.lgsType
       }
+      
 
       console.log('已選門市', selectedStore.value)
     } catch (e) {

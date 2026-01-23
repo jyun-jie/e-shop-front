@@ -35,6 +35,13 @@
               >
                 <span>我的銷售訂單</span>
               </router-link>
+              <router-link 
+                to="/seller/createLogistics" 
+                class="nav-item"
+                :class="{ active: $route.path === '/seller/createLogistics' }"
+              >
+                <span>未確認訂單</span>
+              </router-link>
             </nav>
           </div>
         </el-aside>

@@ -97,6 +97,7 @@ export async function goPurchaseList(type ,config){
       ...(config.value?.params || {})
     }
   }
+  console.log(requestConfig)
   return await request.get("/Order/State/", requestConfig)
 }
 
@@ -146,6 +147,24 @@ export async function goCreateLogistics(data,config){
   return await request.post('/Logistics/create',data,config.value);
 }
 
+export async function goPrintShippingLabel(data,config){
+  return await request.post('/Logistics/print',data,config.value);
+}
+
+export async function goQueryShippingDto(data,config){
+  return await request.post('/Logistics/query',data,config.value);
+}
+
+export async function goGetLogisticOrder(data,config){
+  return await request.get('/Logistics/order?storeType='+data , config.value)
+}
+
+export async function goGetOrderByUnchecked(storeType ,config){
+  console.log(storeType)
+  return await request.get("/SalesOrder/NonCreatedLogisticsOrders",{params:{storeType},...config.value})
+}
 
 
-
+export async function goCheckSelectedOrders(checkOrderList,config){
+  return await request.post("/SalesOrder/createLogistics",{checkOrderList},config.value)
+}

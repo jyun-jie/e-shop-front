@@ -106,6 +106,27 @@ const routes =
               roles: ["User"]
             },
           },
+          {
+            path :'/printLogistics' , 
+            name : 'printLogistics',
+            component : ()=>import('../views/seller/LogisticsPro.vue'),
+          },
+          {
+            path :'/queryShipping' , 
+            name : 'queryShipping',
+            component : ()=>import('../views/seller/PrintShippingLabel.vue'),
+          },
+          {
+            path :'/seller/createLogistics' , 
+            name : 'createLogistics',
+            component : ()=>import('../views/seller/createLogistics.vue'),
+            meta: {
+              requiresAuth: true,
+              roles: ["User"]
+            },
+          },
+
+
         ],
         meta: {
           requiresAuth: true,
