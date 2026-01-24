@@ -171,6 +171,11 @@ const routes =
               requiresAuth: true,
               roles: ["User"]
             },
+          },
+          {
+            path :'/payment/result' , 
+            name : 'result',
+            component : ()=>import('../views/payment/PaymentResult.vue'),
           }
         ],
         meta: {

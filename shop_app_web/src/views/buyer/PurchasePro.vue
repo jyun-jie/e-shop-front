@@ -117,14 +117,17 @@
   import { Loading } from '@element-plus/icons-vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
+  const route = useRoute()
   const selectedOrders = ref([])
   const token = useTokenStore()
   const config = ref()
   const PurchaseList = ref([])
   const router = useRouter()
   const oldButtonId = ref('Not_Ship')
+  const status = ref(null)
   
   const buttons = ref([
+    { id: 'UNCHECKED' , label: '未確認'},
     { id: 'Not_Ship', label: '未出貨' },
     { id: 'Shipping', label: '運輸中' },
     { id: 'Not_Paid', label: '未付款' },
@@ -174,8 +177,15 @@
       }
     }
     
+    status.value = route.query.status?.trim()
+    console.log(status.value);
     // 初始化第一個標籤
-    clickButton('Not_Ship')
+    if(status.value === 'UNCHECKED'){
+      clickButton('UNCHECKED')
+      console.log("是")
+    }else{
+      clickButton('Not_Ship')
+    }
     
     // 設置無限滾動觀察器
     setupInfiniteScroll()
@@ -267,10 +277,13 @@
 
   // 切換標籤
   const clickButton = async (buttonId) => {
+    console.log(buttonId)
     if (oldButtonId.value !== buttonId) {
       oldButtonId.value = buttonId
       activeButton.value = buttonId
       moveUnderline(buttonId)
+
+
       await loadOrders(buttonId, true)
       
       // 重新設置無限滾動觀察器
