@@ -123,7 +123,7 @@
   const config = ref()
   const PurchaseList = ref([])
   const router = useRouter()
-  const oldButtonId = ref('Not_Ship')
+  const oldButtonId = ref('')
   const status = ref(null)
   
   const buttons = ref([
@@ -278,6 +278,7 @@
   // 切換標籤
   const clickButton = async (buttonId) => {
     console.log(buttonId)
+    console.log(oldButtonId.value)
     if (oldButtonId.value !== buttonId) {
       oldButtonId.value = buttonId
       activeButton.value = buttonId
@@ -368,6 +369,7 @@
 
 /* 標籤容器 */
 .tab-container {
+  max-width: 1200px;
   position: relative;
   background: #ffffff;
   border-radius: 8px;
@@ -377,6 +379,8 @@
   display: flex;
   gap: 0;
   overflow-x: auto;
+  justify-content: space-between;
+  margin: 0 auto 20px; /* ⬅️ 關鍵 */
 }
 
 .tab-container::-webkit-scrollbar {

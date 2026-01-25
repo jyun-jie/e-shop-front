@@ -138,6 +138,7 @@ const product = reactive({
   quantity: 1,
   address: '',
   description: '',
+  coverImage: null, // ✅ 關鍵
 })
 
 const imageFiles = ref([])
@@ -185,6 +186,7 @@ const onSubmit = async function (event) {
   if (!formRef.value) return
 
   try {
+    console.log(coverImage.value)
     await formRef.value.validate()
     
     if (!coverImage.value) {
@@ -238,7 +240,7 @@ const onFileChange = (file, fileList) => {
 
 const onCoverPhotoChange = (file) => {
   coverImage.value = file
-  console.log("上傳封面圖片 : " + coverImage.value.name)
+  product.coverImage = file   // ✅ 讓 form 知道有值
 }
 
 const Cancel = () => {

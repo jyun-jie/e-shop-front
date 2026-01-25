@@ -174,12 +174,11 @@ onUnmounted(() => {
 }
 
 .products-grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
-
 .product-card {
   background: #ffffff;
   border: 1px solid #e9ecef;

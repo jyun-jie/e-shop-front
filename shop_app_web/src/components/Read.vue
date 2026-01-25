@@ -1,29 +1,28 @@
 <template>
-  <div class="common-layout">
-    <el-container>
+  <div class="layout">
+    <header class="header">
       <Header />
-      <el-container>
+    </header>
+
+    <div class="body">
+      <aside class="aside">
         <Aside />
-        <el-container>
-          <el-main>
-            <!--變ReadPro-->
-            <div v-if="$route.path === '/Read'">
-              <ReadPro />
-            </div>
-            <!--變myPurchase-->
-            <div v-if="$route.path === '/Read/myPurchase'">
-              <PurchasePro />
-            </div>
-            <router-view></router-view>
-          </el-main>
-          <el-footer class="custom-footer">
-            <div class="footer-content">
-              <p>&copy; 2024 E-Shop. All rights reserved.</p>
-            </div>
-          </el-footer>
-        </el-container>
-      </el-container>
-    </el-container> 
+      </aside>
+
+      <main class="main">
+        <div v-if="$route.path === '/Read'"> 
+        <ReadPro /> 
+        </div> <!--變myPurchase--> 
+        <div v-if="$route.path === '/Read/myPurchase'"> 
+        <PurchasePro /> 
+        </div>
+        <router-view />
+      </main>
+    </div>
+
+    <footer class="footer">
+      <p>© 2024 E-Shop. All rights reserved.</p>
+    </footer>
   </div>
 </template>
 
@@ -62,30 +61,53 @@ import PurchasePro from "@/views/buyer/PurchasePro.vue"
 </script>
 
 <style scoped>
-.common-layout {
-  width: 100%;
+.layout {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
 }
 
-.custom-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e9ecef;
+/* Header */
+.header {
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  flex-shrink: 0;
+}
+
+/* 中間區塊 */
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0; /* 🔥 */
+}
+
+/* Aside */
+.aside {
+  width: 12%;
+  background: #ffffff;
+  border-right: 1px solid #e9ecef;
+  flex-shrink: 0;
+}
+
+/* Main（Grid 的爸爸） */
+.main {
+  flex: 1;
+  min-width: 0;        /* 🔥 Grid 必須 */
+  overflow-y: auto;
+  background: #f5f5f5;
+  padding: 64px 5px 15px 0px;
+}
+
+/* Footer */
+.footer {
   height: 60px;
+  background: #ffffff;
+  border-top: 1px solid #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  bottom: 0;
-  left: 15%;
-  right: 0;
-  width: 85%;
-  z-index: 100;
-}
-
-.footer-content {
-  text-align: center;
   color: #999;
-  font-size: 14px;
+  flex-shrink: 0;
 }
 </style>

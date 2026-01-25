@@ -54,12 +54,12 @@
           </div>
         </el-aside>
         <el-container>
-          <el-main class="seller-main">
-            <div v-if="$route.path === '/seller'">
+          <el-container class="main-container">
+            <el-main class="seller-main">
               <SellerPro />
-            </div>
-            <router-view></router-view>
-          </el-main>
+              <router-view />
+            </el-main>
+          </el-container>
           <el-footer class="custom-footer">
             <div class="footer-content">
               <p>&copy; 2024 E-Shop. All rights reserved.</p>
@@ -158,9 +158,16 @@ import {goSeller} from '@/api/token.js'
   font-weight: 600;
 }
 
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-width: 0; /* ⭐ 非常重要，沒這行會被撐死 */
+}
 .seller-main {
-  background-color: #f5f5f5;
-  padding: 20px;
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
 }
 
 .custom-footer {
