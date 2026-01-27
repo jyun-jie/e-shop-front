@@ -34,6 +34,8 @@ import {goReadPro } from '@/api/token.js'
   const product = ref([])
   const config = ref()
   const token = useTokenStore()
+  const isLoading = ref(false) // 1. 增加加載鎖
+  const isFinished = ref(false) // 增加是否全部加載完的判斷
   
   
   const scrollContainer = ref(null)
@@ -62,27 +64,42 @@ import {goReadPro } from '@/api/token.js'
   }
     
   const getGoReadPro =async function(){
+    if (isLoading.value || isFinished.value) return // 如果正在加載或已結束，則跳出
+
+    isLoading.value = true
+
     let params ={
       pageNum:pageNum.value,
       pageSize:pageSize.value
     }
-    let data = await goReadPro(params,config)
-    pageNum.value = data.data.pageNum
-    //展開各自的object 並相加再組成陣列
-    product.value = [...product.value,...data.data.productList]
-    console.log(product)
+    try {
+      let data = await goReadPro(params, config)
+      console.log(data.data)
+      const newList = data.data.productList
+    
+      if (newList && newList.length > 0) {
+        pageNum.value = data.data.pageNum
+        product.value = [...product.value, ...newList]
+      } else {
+        isFinished.value = true // 沒數據了，停止觀察
+      }
+    } catch (error) {
+      console.error("加載失敗", error)
+    } finally {
+      isLoading.value = false // 3. 請求結束後解鎖
+    }
   }
 
   const observer = new IntersectionObserver(
       (entries) => {
         //是否進到觀察畫面裡
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !isLoading.value) {
           getGoReadPro()
         }
       },
       { 
         //觀察的元素
-        root:scrollContainer.value,
+        root:scrollContainer.value, threshold: 0.1 
       }
     )
 

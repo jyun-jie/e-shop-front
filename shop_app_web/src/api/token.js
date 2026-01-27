@@ -16,6 +16,14 @@ export async function goVisitor(config){
   }
 }
 
+export async function goLogin(data){
+  return await request.post("/login/user",data)
+}
+
+export async function goRegister(data){
+  return await request.post("/login/register",data)
+}
+
 export async function goReadPro(params,config){
   //需要用{params,config } 就可包含url參數與請求頭
   /*try {

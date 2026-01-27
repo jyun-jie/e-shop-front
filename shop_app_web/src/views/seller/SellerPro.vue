@@ -71,6 +71,7 @@ const pageNum = ref(0)
 const pageSize = ref(15)
 const loadMoreTrigger = ref(null)
 const hasMore = ref(true)
+const isLoading = ref(false) // 增加一個加載狀態鎖
 let observer = null
 
 // 格式化價格
@@ -92,7 +93,7 @@ onMounted(() => {
   if (loadMoreTrigger.value) {
     observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore.value) {
+        if (entries[0].isIntersecting && hasMore.value && !isLoading.value) {
           getGoSellerPro()
         }
       },
@@ -107,6 +108,7 @@ onMounted(() => {
 })
 
 const getGoSellerPro = async function () {
+  isLoading.value = true ; 
   try {
     let params = {
       pageNum: pageNum.value,
@@ -116,7 +118,7 @@ const getGoSellerPro = async function () {
     let data = await goSellerPro(params, config)
     console.log(data)
     
-    if (data.data !== null) {
+    if (data.data !== null && data.data.productList.length > 0) {
       pageNum.value = data.data.pageNum
       product.value = [...product.value, ...data.data.productList]
       

@@ -132,6 +132,7 @@ import { useRouter } from 'vue-router'
 import { useTokenStore } from '@/store/index.js'
 import { jwtDecode } from "jwt-decode";
 import { ElMessage } from 'element-plus'
+import { goLogin  , goRegister} from '@/api/token.js'
 
 const router = useRouter()
 const tokenStore = useTokenStore();
@@ -187,10 +188,13 @@ const submitForm = async (form) => {
     await ruleFormRef.value.validate()
     isSubmitting.value = true
     
-    const response = await axios.post('http://localhost:8080/login/user', form)
+    const response = await goLogin(form)
+    //const response = await axios.post('http://localhost:8080/login/user', form)
     const data = response.data
     
-    const token = data.data.token
+    console.log(data)
+    const token = data.token
+    console.log(token)
     tokenStore.setToken(token)
     
     const payload = jwtDecode(token);
@@ -221,7 +225,8 @@ const register = async (form) => {
     await ruleFormRef.value.validate()
     isSubmitting.value = true
     
-    const response = await axios.post('http://localhost:8080/login/register', form)
+    const response = await goRegister(form) ; 
+    //const response = await axios.post('/api/login/register', form)
     const data = response.data
     
     ElMessage.success('註冊成功！請登入')

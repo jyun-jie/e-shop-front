@@ -56,7 +56,9 @@
         <el-container>
           <el-container class="main-container">
             <el-main class="seller-main">
-              <SellerPro />
+              <div v-if="$route.path === '/seller'">
+                <SellerPro />
+              </div>
               <router-view />
             </el-main>
           </el-container>

@@ -3,9 +3,11 @@
 import axios from 'axios';
 
 //定義要訪問的後端 url前綴  ,  baseURL
-const baseURL = 'http://localhost:8080';
-const instance = axios.create({baseURL})
+//const baseURL = '/api';
+//const instance = axios.create({baseURL : '/api'})
 
+const baseURL = 'http://localhost:8080';
+const instance = axios.create({baseURL })
 
 const WHITE_LIST = [
   "/Api/Payment/newebpay",
