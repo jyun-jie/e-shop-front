@@ -3,8 +3,12 @@ import axios from 'axios';
 import instance from './request';
 
 //定義要訪問的後端 url前綴  ,  baseURL
+
 const baseURL = 'http://localhost:8080';
-const buyer = axios.create({baseURL})
+const buyer = axios.create({baseURL })
+
+//const baseURL = 'api';
+//const buyer = axios.create({baseURL : '/api'})
 
 buyer.interceptors.response.use(
   //成功
